@@ -50,11 +50,9 @@ Har bir tool uchun quyidagi formatda JSON yuboring:
       "emoji": "tegishli emoji",
       "tagline": "qisqa slogan (inglizcha)",
       "features": [
-        "xususiyat 1",
-        "xususiyat 2",
-        "xususiyat 3"
+        "asosiy xususiyat (qisqa, 5-8 so'z)"
       ],
-      "use_cases": "kim va qanday foydalanishi mumkin",
+      "use_cases": "kim foydalanishi (qisqa)",
       "pricing": "bepul/pullik/freemium",
       "category": "{category}"
     }}
@@ -118,56 +116,31 @@ Faqat JSON formatida qaytaring."""
     return json.loads(content)
 
 def format_telegram_message(tools_data):
-    """Telegram uchun chiroyli xabar formatlaydi"""
+    """Telegram uchun qisqa xabar formatlaydi"""
     today = datetime.now().strftime("%d.%m.%Y")
-    weekdays_uz = {
-        0: "Dushanba", 1: "Seshanba", 2: "Chorshanba",
-        3: "Payshanba", 4: "Juma", 5: "Shanba", 6: "Yakshanba"
-    }
-    weekday = weekdays_uz[datetime.now().weekday()]
-
     tools = tools_data.get("tools", [])
 
-    # Header
-    message = f"🤖 *AI TOOLS KUNDALIGI*\n"
-    message += f"📅 {weekday}, {today}\n"
-    message += f"━━━━━━━━━━━━━━━━━━━━\n\n"
+    message = f"🤖 *AI TOOLS — {today}*\n\n"
 
     for i, tool in enumerate(tools, 1):
         emoji = tool.get("emoji", "🔧")
         name = tool.get("name", "")
         url = tool.get("url", "")
-        tagline = tool.get("tagline", "")
         features = tool.get("features", [])
-        use_cases = tool.get("use_cases", "")
-        pricing = tool.get("pricing", "")
+        pricing = tool.get("pricing", "").lower()
 
-        # Pricing emoji
-        pricing_emoji = "💚" if "bepul" in pricing.lower() or "free" in pricing.lower() else \
-                       "💛" if "freemium" in pricing.lower() else "💰"
+        price_icon = "💚" if "free" in pricing or "bepul" in pricing else \
+                     "💛" if "freemium" in pricing else "💰"
 
-        message += f"{emoji} *{i}. [{name}]({url})*\n"
-        message += f"_{tagline}_\n\n"
+        # Faqat 1 ta eng muhim xususiyat
+        main_feature = features[0] if features else ""
 
-        if features:
-            message += f"✅ *Imkoniyatlari:*\n"
-            for feature in features[:3]:
-                message += f"  • {feature}\n"
-            message += "\n"
+        message += f"{emoji} [*{name}*]({url}) {price_icon}\n"
+        if main_feature:
+            message += f"   _{main_feature}_\n"
+        message += "\n"
 
-        if use_cases:
-            message += f"🎯 *Kimga foydali:* {use_cases}\n"
-
-        message += f"{pricing_emoji} *Narx:* {pricing}\n"
-
-        if i < len(tools):
-            message += f"\n{'─' * 20}\n\n"
-
-    # Footer
-    message += f"\n━━━━━━━━━━━━━━━━━━━━\n"
-    message += f"🔔 Har kuni yangi AI toollar!\n"
-    message += f"#AITools #SuniyIdrok #Texnologiya #Uzbek"
-
+    message += "#AITools #Uzbek"
     return message
 
 def send_to_telegram(message):
