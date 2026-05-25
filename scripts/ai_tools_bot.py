@@ -111,38 +111,40 @@ O'qigan kishi: "Voy, bu boshqacha-ku!" desin. Asli — yodda qolaylik.
 - Texnik atamalar yo'q: "AI" → "aqlli yordamchi", "model" → "aqlli mashina"
 - Har jumla yozishdan oldin: "Bu jumla ichida kichik bir hikmat bormi?" — sinov
 
-🎯 UZUNLIK MUHIM:
-- "what" — 2-3 jumla (kichik hikoya), nafaqat ta'rif
-- "who" — 1-2 jumla (kasb ro'yxati EMAS, "kimning hayotini o'zgartirishi" hikoyasi)
-- "tip" — 1-2 jumla (amaliy maslahat + nima sodir bo'lishi)
+🎯 UZUNLIK (qisqa, lekin yodda qoladigan):
+- "what" — 1 ta jumla (qisqa hikoya yoki o'tkir kuzatuv)
+- "who" — 1 ta jumla (qisqa, lekin xarakter bilan)
+- "tip" — 1 ta jumla (aniq amaliy harakat)
 
-TO'LIQ MISOL (xuddi shu darajada uzun va hikoyali):
+UZUN TAVSIF YO'Q. Lekin har jumla — yodda qoladigan, hikmatli.
+
+TO'LIQ MISOL (xuddi shu UZUNLIKDA):
 
 {{
   "name": "Otter.ai",
   "url": "https://otter.ai",
   "emoji": "🎙️",
-  "what": "Yig'ilishdagi so'zlar havoda sochilib ketadi-ku, qo'zichog'im. Mana bu aqlli yordamchi har bir so'zni ushlab, qog'ozga tushiradi. Hech narsa esdan chiqmaydi, endi xotirangiz yengillashadi.",
-  "who": "Kuniga bir necha uchrashuvga kiradiganlar uchun najot. Boshliq, sotuvchi, jurnalist — barchasi vaqtini tejaydi va asosiy ishga qaytadi.",
-  "tip": "Zoom yoki Google Meet'ga ulang — yig'ilish tugashi bilan qisqacha xulosa qo'lingizda. Endi qog'ozga yozish kerak emas, faqat eshiting va o'ylang."
+  "what": "Yig'ilishdagi so'zlar havoda sochilmasin, qog'ozga tushiradi.",
+  "who": "Ko'p uchrashuvga kiradiganlar — boshliq, sotuvchi, jurnalist.",
+  "tip": "Zoom'ga ulang — xulosa o'zi keladi, qo'zichog'im."
 }}
 
 {{
   "name": "Notion AI",
   "url": "https://www.notion.so/product/ai",
   "emoji": "✍️",
-  "what": "Bo'sh qog'oz oldida qancha o'tirib qolgansiz? Bu yerda u qo'rquv yo'q. Aytasiz — so'z keladi. Eslatma kerakmi, xat kerakmi, ro'yxat — barchasini bir lahzada beradi.",
-  "who": "Yozishni ish qiluvchilar uchun: blog yozuvchi, talaba, ofis xodimi. Hatto onangiz ham retsept yozishda foydalansa bo'ladi.",
-  "tip": "Eslatma ichida \"/\" belgisini bosing va o'z so'zlaringiz bilan ayting nima kerakligini. Qolgani — aqlli yordamchining ishi, yulduzim."
+  "what": "Bo'sh qog'oz qo'rquvi yo'q endi — aytasiz, yozadi.",
+  "who": "Yozadigan har kim: talaba, blog yozuvchi, ofis xodimi.",
+  "tip": "\"/\" bosing va istagingizni so'zlar bilan ayting."
 }}
 
 {{
   "name": "Cursor",
   "url": "https://cursor.com",
   "emoji": "💻",
-  "what": "Kod yozish endi mashinaga aytib turish bilan bo'lib qoldi. O'z tilingizda gapirasiz: \"Menga kalkulyator yoz\" deysiz — yozadi. Kompyuter endi sizning yordamchingiz.",
-  "who": "Dasturchilar uchun emin pana, dasturchi bo'lmoqchilar uchun ochiq eshik. Yangi boshlovchi ham, tajribali ham bir xil quvvat oladi.",
-  "tip": "Cmd+K bosing va istagingizni aniq ayting. Aniqroq aytsangiz — aniqroq yozadi. Bir paytlar dasturchi bo'lish yillab vaqt talab qilardi, endi haftalik mavzu."
+  "what": "Kod yozish endi suhbatga aylangan, ko'rdingizmi?",
+  "who": "Dasturchilar va dasturchi bo'lmoqchilar.",
+  "tip": "Cmd+K bosib o'z tilingizda gapiring — eshitadi, yulduzim."
 }}
 
 USLUB MISOLLARI (xuddi shunday — bolaga aytgandek):
@@ -361,11 +363,11 @@ def format_tools_message(tools_data):
 
         message += f'{emoji} <a href="{url}"><b>{name}</b></a>\n\n'
         if what:
-            message += f"<b>Nima uchun?</b>\n{what}\n\n"
+            message += f"🎯 <b>Nima uchun?</b> {what}\n\n"
         if who:
-            message += f"<b>Kimlar uchun?</b>\n{who}\n\n"
+            message += f"👥 <b>Kimlar uchun?</b> {who}\n\n"
         if tip:
-            message += f"<b>Tavsiya:</b>\n{tip}\n"
+            message += f"💡 <b>Tavsiya:</b> {tip}\n"
         message += "\n— — — — — — — — —\n\n"
 
     message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - sodda tilda sun\'iy intellekt'
