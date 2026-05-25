@@ -68,7 +68,7 @@ MUHIM TALABLAR:
 Faqat JSON qaytaring, boshqa matn yo'q."""
 
     response = client.messages.create(
-        model="claude-opus-4-7",
+        model="claude-sonnet-4-6",
         max_tokens=2000,
         messages=[{"role": "user", "content": prompt}]
     )
@@ -122,7 +122,7 @@ QOIDALAR:
 Faqat JSON qaytaring."""
 
     response = client.messages.create(
-        model="claude-opus-4-7",
+        model="claude-sonnet-4-6",
         max_tokens=1500,
         messages=[{"role": "user", "content": prompt}]
     )
@@ -154,7 +154,7 @@ Qoidalar:
 Faqat JSON formatida qaytaring."""
 
     response = client.messages.create(
-        model="claude-opus-4-7",
+        model="claude-sonnet-4-6",
         max_tokens=2000,
         messages=[{"role": "user", "content": prompt}]
     )
