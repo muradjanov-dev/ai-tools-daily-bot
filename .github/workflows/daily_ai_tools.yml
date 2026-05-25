@@ -1,0 +1,60 @@
+name: 🤖 Daily AI Tools - Uzbek
+
+on:
+  schedule:
+    # Har kuni soat 09:00 Toshkent vaqti (UTC+5 = 04:00 UTC)
+    - cron: '0 4 * * *'
+
+  # Qo'lda ham ishlatish uchun
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test mode (xabar yuborilmaydi)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  send-ai-tools:
+    name: 📢 AI Tools yuborish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Kodni yuklab olish
+        uses: actions/checkout@v4
+
+      - name: 🐍 Python sozlash
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Kutubxonalarni o'rnatish
+        run: |
+          pip install anthropic requests
+
+      - name: 🤖 AI Tools botni ishlatish
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TEST_MODE: ${{ github.event.inputs.test_mode || 'false' }}
+        run: |
+          cd scripts
+          python ai_tools_bot.py
+
+      - name: ✅ Muvaffaqiyat xabari
+        if: success()
+        run: |
+          echo "🎉 AI Tools muvaffaqiyatli yuborildi!"
+          echo "📅 Sana: $(date '+%Y-%m-%d %H:%M UTC')"
+
+      - name: ❌ Xato xabari
+        if: failure()
+        run: |
+          echo "❌ Bot ishda xato yuz berdi!"
+          echo "📅 Sana: $(date '+%Y-%m-%d %H:%M UTC')"
