@@ -252,11 +252,11 @@ def format_tools_message(tools_data):
 
         message += f'{emoji} <a href="{url}"><b>{name}</b></a>\n'
         if what:
-            message += f"🎯 <b>Nima uchun?</b> {what}\n"
+            message += f"<b>Nima uchun?</b> {what}\n"
         if who:
-            message += f"👥 <b>Kimlar uchun?</b> {who}\n"
+            message += f"<b>Kimlar uchun?</b> {who}\n"
         if tip:
-            message += f"💡 <b>Tavsiya:</b> {tip}\n"
+            message += f"<b>Tavsiya:</b> {tip}\n"
         message += "\n"
 
     message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> — ai botaloq bilan sun\'iy intellekt'
