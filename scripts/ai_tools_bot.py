@@ -88,19 +88,31 @@ def search_ai_tools():
 Bugungi kunda eng yangi va foydali 3 ta AI tool haqida ma'lumot bering.
 Fokus: {category} sohasidagi toollar.
 
-YOZUV USLUBI — JUDA MUHIM:
-🎯 ASOSIY QOIDA: Xuddi 5-6 yoshli bolaga tushuntirayotgandek yozing
-- Eng sodda so'zlar — texnik atamalar yo'q
-- "AI" o'rniga "aqlli yordamchi"
-- "Transcription" o'rniga "ovozni yozadi"
-- "Generate" o'rniga "yaratadi", "yasaydi"
-- Bolaga tushunarli misollar: "xuddi do'sting kabi", "qog'ozga yozish kabi"
-- Hatto bobosi yoki onasi ham tushunsin
+YOZUV USLUBI — BU BIZNING BRENDIMIZ:
 
-🎯 ILIQLIK:
-- "qo'zichog'im / bo'talog'im / qadrligim / yulduzim / do'mboqqinam" — FAQAT 1 ta toolda (3 dan birida), har gal boshqacha
-- Qolgan 2 toolda — toza, sodda, lekin baribir do'stona
+🎨 Biz "Ai bo'taloq" kanalimiz — o'qigan har bir kishi bizni esda saqlab qolsin.
+Bu — boshqa hech qaysi kanalda yo'q UNIKAL ohang:
+- Donishmand bobo + qiziqarli amaki + falsafiy do'st aralashmasi
+- Kulgili, g'ayrioddiy, lekin chuqur ma'noli
+- Texnik emas — bolakaylar va donishmandlar bir xil tushunsin
+
+🎯 SODDA TIL:
+- 5-6 yoshli bolaga aytgandek tushuntiring
+- "AI" → "aqlli yordamchi" / "aqlli mashina"
+- "Transcription" → "eshitib, qog'ozga tushiradi"
+- "Generate" → "yaratadi", "tug'iradi"
+- Bobomiz ham, talaba ham tushunsin
+
+🎯 ILIQLIK + G'AYRIODDIYLIK:
+- "qo'zichog'im / bo'talog'im / qadrligim / yulduzim / do'mboqqinam / himmatligim" — FAQAT 1 ta toolda (3 dan birida), har gal BOSHQACHA so'z
+- Qolgan 2 toolda — mehrli murojaatsiz, lekin baribir o'ziga xos ohang
+- Ba'zan ritorik savol: "to'g'rimi?", "ko'rdingizmi?", "ha?"
+- Ba'zan kichik kuzatuv-haqiqat: "vaqt og'rir narsa..."
 - "siz" deb murojaat
+
+🎯 ESDA QOLISH:
+- Har gap shunday yozilsinki, odamlar uni do'stiga aytib bersa qiziqarli bo'lsin
+- Quruq texnik tavsif emas — kichik hayot bo'lagidek
 
 USLUB MISOLLARI (xuddi shunday — bolaga aytgandek):
 
@@ -215,30 +227,38 @@ def translate_news_to_uzbek(news_items):
         f"{i+1}. {item['title']}" for i, item in enumerate(news_items)
     ])
 
-    prompt = f"""Quyidagi haqiqiy AI yangiliklar sarlavhalarini O'ZBEK tiliga JUDA QISQA tarjima qiling.
+    prompt = f"""Siz 30 yillik tajribaga ega kreativ kopirayter va jurnalistsiz.
+Quyidagi haqiqiy AI yangiliklar sarlavhalarini O'ZBEK tiliga PROFESSIONAL tarjima qiling.
 
 {titles_text}
 
-QOIDALAR:
-📰 ENG MUHIMI: Tarjima MAKSIMAL 5-8 so'zdan iborat bo'lsin
-📰 Faqat eng asosiy ma'noni saqlang — "kim, nima qildi" toza shaklda
-📰 Ortiqcha so'zlar yo'q — qisqa, lo'nda, gazeta sarlavhasi kabi
-📰 Kompaniya nomlarini (OpenAI, Google) saqlang
-📰 Rasmiy ohang — sensatsiya emas
-📰 Tabiiy o'zbek tilida
+USLUB - MASTAVA DAYJEST kabi:
+✓ "Amazon'dan yangi AI gadjet: Bee doimiy ravishda sizni eshitib turadi"
+✓ "Xitoyning DeepSeek kompaniyasi AI narxlarini 75 foizga tushirdi"
+✓ "San-Fransiskoda robotlar muhtojlar uchun ovqat tayyorlashni boshladi"
+✓ "Xakerlar AI chatbotlarning «xarakterini» o'rganib, ularni aldashmoqda"
+✓ "Siz ishlatayotgan xizmat haqiqatdan AI'mi yoki shunchaki reklama?"
 
-MISOLLAR (xuddi shunday qisqa):
-✓ "OpenAI yangi videomodelni taqdim etdi"
-✓ "Google AI'ga 100 milliard sarflaydi"
-✓ "Anthropic Claude 4.7 ni chiqardi"
-✓ "Elon Mask quyosh energiyasidan voz kechdi"
-✓ "Microsoft yangi Copilot funksiyasini taqdim etdi"
+QOIDALAR:
+📰 Sarlavha 8-15 so'z — qisqa, lekin INFORMATIV
+📰 Aniq raqam, nom, joy — eng muhimi sarlavhadan ko'rinsin
+📰 Ba'zan ":" bilan struktura — "[Manba/Kontekst]: [Asosiy ma'lumot]"
+📰 Ba'zan savol shaklida — qiziqish uyg'otish
+📰 Kreativ lekin to'g'ri — sensatsiya emas
+📰 Kompaniya/mahsulot nomlarini saqlang
+📰 Tabiiy o'zbek tilida — gazeta jurnalisti kabi
+
+MUHIM: Har sarlavha BOSHQACHA tuzilsin — bir xil shablon emas:
+- birida ":" bilan
+- birida savol
+- birida to'g'ridan-to'g'ri
+- birida joy/raqam ta'kidlangan
 
 Format - faqat JSON:
 {{
   "translations": [
-    "1-qisqa tarjima",
-    "2-qisqa tarjima",
+    "1-professional tarjima",
+    "2-professional tarjima",
     ...
   ]
 }}
@@ -273,11 +293,12 @@ def html_escape(text):
 
 
 def format_tools_message(tools_data):
-    """AI Tools uchun xabar (HTML format)"""
+    """AI Tools uchun xabar (HTML format) — kechqurun"""
     today = datetime.now().strftime("%d-%b")
     tools = tools_data.get("tools", [])
 
-    message = f"🤖 <b>Ai bo'taloq {today}</b>\n\n"
+    message = f"🤖 <b>Ai bo'taloq {today}</b>\n"
+    message += "<i>Bugungi AI yordamchilar</i>\n\n"
 
     for tool in tools:
         emoji = tool.get("emoji", "🔧")
@@ -287,34 +308,36 @@ def format_tools_message(tools_data):
         who = html_escape(tool.get("who", ""))
         tip = html_escape(tool.get("tip", tool.get("how", "")))
 
-        message += f'{emoji} <a href="{url}"><b>{name}</b></a>\n'
+        message += f'{emoji} <a href="{url}"><b>{name}</b></a>\n\n'
         if what:
-            message += f"<b>Nima uchun?</b> {what}\n"
+            message += f"<b>Nima uchun?</b>\n{what}\n\n"
         if who:
-            message += f"<b>Kimlar uchun?</b> {who}\n"
+            message += f"<b>Kimlar uchun?</b>\n{who}\n\n"
         if tip:
-            message += f"<b>Tavsiya:</b> {tip}\n"
-        message += "\n"
+            message += f"<b>Tavsiya:</b>\n{tip}\n"
+        message += "\n— — — — — — — — —\n\n"
 
     message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - bilan sun\'iy intellekt'
     return message
 
 
 def format_news_message(news_data):
-    """AI Yangiliklar uchun alohida xabar (HTML format)"""
+    """AI Yangiliklar uchun alohida xabar (HTML format) — ertalab"""
     today = datetime.now().strftime("%d-%b")
     news = news_data.get("news", [])
 
     if not news:
         return None
 
-    message = f"📰 <b>Ai bo'taloq {today}</b>\n\n"
+    message = f"📰 <b>Ai bo'taloq {today}</b>\n"
+    message += "<i>Bugungi AI yangiliklari</i>\n\n"
+
     for item in news:
         headline = html_escape(item.get("headline", ""))
         n_url = item.get("url", "")
         message += f'🧩 <a href="{n_url}">{headline}</a>\n\n'
 
-    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - bilan sun\'iy intellekt'
+    message += '\n<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - bilan sun\'iy intellekt'
     return message
 
 def send_to_telegram(message):
@@ -352,55 +375,58 @@ def send_error_notification(error_msg):
     except:
         pass
 
+def send_tools():
+    """AI Tools xabarini yuboradi (kechqurun)"""
+    print("\n🔍 AI toollar qidirilmoqda...")
+    tools_data = search_ai_tools()
+    print(f"✅ {len(tools_data.get('tools', []))} ta tool topildi")
+
+    tools_uz = translate_to_uzbek(tools_data)
+    tools_msg = format_tools_message(tools_uz)
+    print(f"✅ Tools xabar tayyor: {len(tools_msg)} belgi")
+
+    print("\n📤 AI Tools xabari yuborilmoqda...")
+    return send_to_telegram(tools_msg)
+
+
+def send_news():
+    """AI Yangiliklar xabarini yuboradi (ertalab)"""
+    print("\n📰 RSS manbalardan AI yangiliklari olinmoqda...")
+    real_news = fetch_real_ai_news(max_items=5, hours_back=72)
+    print(f"✅ {len(real_news)} ta yangilik topildi")
+
+    print("\n🌐 Sarlavhalar tarjima qilinmoqda...")
+    news_data = translate_news_to_uzbek(real_news)
+    news_msg = format_news_message(news_data)
+
+    if not news_msg:
+        print("⚠️  Yuborish uchun yangilik yo'q")
+        return False
+
+    print(f"✅ News xabar tayyor: {len(news_msg)} belgi")
+    print("\n📤 AI News xabari yuborilmoqda...")
+    return send_to_telegram(news_msg)
+
+
 def main():
-    print("🚀 AI Tools Bot ishga tushdi...")
+    mode = os.environ.get("MODE", "both").lower()
+    print(f"🚀 AI Tools Bot ishga tushdi — MODE: {mode}")
     print(f"📅 Sana: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
 
     try:
-        # 1. AI toollarni qidirish
-        print("\n🔍 AI toollar qidirilmoqda...")
-        tools_data = search_ai_tools()
-        print(f"✅ {len(tools_data.get('tools', []))} ta tool topildi")
+        if mode == "tools":
+            success = send_tools()
+        elif mode == "news":
+            success = send_news()
+        else:  # both
+            s1 = send_tools()
+            s2 = send_news()
+            success = s1 and s2
 
-        # 2. O'zbek tiliga tarjima
-        print("\n🇺🇿 O'zbek tiliga tarjima qilinmoqda...")
-        tools_uz = translate_to_uzbek(tools_data)
-        print("✅ Tarjima tugadi")
-
-        # 3. Haqiqiy RSS dan AI yangiliklarni olish
-        print("\n📰 RSS manbalardan AI yangiliklari olinmoqda...")
-        try:
-            real_news = fetch_real_ai_news(max_items=5, hours_back=72)
-            print(f"✅ {len(real_news)} ta haqiqiy yangilik topildi")
-            print("\n🌐 Sarlavhalar o'zbek tiliga tarjima qilinmoqda...")
-            news_data = translate_news_to_uzbek(real_news)
-            print(f"✅ {len(news_data.get('news', []))} ta yangilik tarjima qilindi")
-        except Exception as e:
-            print(f"⚠️  Yangiliklar olinmadi: {e}")
-            news_data = {"news": []}
-
-        # 4. Xabarlarni formatlash (alohida)
-        print("\n📝 Xabarlar formatlanmoqda...")
-        tools_msg = format_tools_message(tools_uz)
-        news_msg = format_news_message(news_data)
-        print(f"✅ Tools xabar: {len(tools_msg)} belgi")
-        if news_msg:
-            print(f"✅ News xabar: {len(news_msg)} belgi")
-
-        # 5. Tools xabarini yuborish
-        print("\n📤 AI Tools xabari yuborilmoqda...")
-        success1 = send_to_telegram(tools_msg)
-
-        # 6. News xabarini yuborish (alohida)
-        success2 = True
-        if news_msg:
-            print("\n📤 AI News xabari yuborilmoqda...")
-            success2 = send_to_telegram(news_msg)
-
-        if success1 and success2:
-            print("\n🎉 Hamma xabarlar muvaffaqiyatli yuborildi!")
+        if success:
+            print("\n🎉 Muvaffaqiyatli yakunlandi!")
         else:
-            print("\n❌ Ba'zi xabarlarda xato yuz berdi")
+            print("\n❌ Xato bilan yakunlandi")
 
     except Exception as e:
         error = str(e)

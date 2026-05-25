@@ -1,25 +1,28 @@
-name: 🤖 Daily AI Tools - Uzbek
+name: 🤖 Daily AI Tools & News - Uzbek
 
 on:
   schedule:
-    # Har kuni soat 09:00 Toshkent vaqti (UTC+5 = 04:00 UTC)
+    # Ertalab 09:00 Toshkent (UTC+5 = 04:00 UTC) — AI YANGILIKLAR
     - cron: '0 4 * * *'
+    # Kechqurun 19:00 Toshkent (UTC+5 = 14:00 UTC) — AI TOOLS
+    - cron: '0 14 * * *'
 
-  # Qo'lda ham ishlatish uchun
+  # Qo'lda ishga tushirish uchun
   workflow_dispatch:
     inputs:
-      test_mode:
-        description: 'Test mode (xabar yuborilmaydi)'
-        required: false
-        default: 'false'
+      mode:
+        description: 'Qaysi xabar yuborilsin?'
+        required: true
+        default: 'both'
         type: choice
         options:
-          - 'false'
-          - 'true'
+          - 'both'
+          - 'tools'
+          - 'news'
 
 jobs:
-  send-ai-tools:
-    name: 📢 AI Tools yuborish
+  send-message:
+    name: 📢 Xabar yuborish
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -37,12 +40,25 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: 🤖 AI Tools botni ishlatish
+      - name: 🎯 MODE ni aniqlash
+        id: detect_mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.schedule }}" = "0 4 * * *" ]; then
+            echo "mode=news" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.schedule }}" = "0 14 * * *" ]; then
+            echo "mode=tools" >> $GITHUB_OUTPUT
+          else
+            echo "mode=both" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🤖 Botni ishlatish (${{ steps.detect_mode.outputs.mode }})
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          TEST_MODE: ${{ github.event.inputs.test_mode || 'false' }}
+          MODE: ${{ steps.detect_mode.outputs.mode }}
         run: |
           cd scripts
           python -u ai_tools_bot.py 2>&1 | tee /tmp/bot_log.txt
