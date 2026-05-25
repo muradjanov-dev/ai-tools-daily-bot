@@ -209,28 +209,35 @@ def translate_news_to_uzbek(news_items):
         f"{i+1}. {item['title']}" for i, item in enumerate(news_items)
     ])
 
-    prompt = f"""Quyidagi haqiqiy AI yangiliklar sarlavhalarini O'ZBEK tiliga tarjima qiling.
+    prompt = f"""Quyidagi haqiqiy AI yangiliklar sarlavhalarini O'ZBEK tiliga JUDA QISQA tarjima qiling.
 
 {titles_text}
 
 QOIDALAR:
-📰 Tabiiy, rasmiy o'zbek tilida tarjima qiling
-📰 Faqat tarjima qiling — MA'NOSINI O'ZGARTIRMANG, qo'shimcha narsa qo'shmang
-📰 Kompaniya, mahsulot va odam nomlarini (OpenAI, ChatGPT, Sam Altman) o'zgartirmang
-📰 Tarjima 8-15 so'zdan iborat bo'lsin
-📰 Clickbait emas — rasmiy, jurnalistik ohang
-📰 Texnik atamalarni tushunarli qiling, lekin aniqlikni saqlang
+📰 ENG MUHIMI: Tarjima MAKSIMAL 5-8 so'zdan iborat bo'lsin
+📰 Faqat eng asosiy ma'noni saqlang — "kim, nima qildi" toza shaklda
+📰 Ortiqcha so'zlar yo'q — qisqa, lo'nda, gazeta sarlavhasi kabi
+📰 Kompaniya nomlarini (OpenAI, Google) saqlang
+📰 Rasmiy ohang — sensatsiya emas
+📰 Tabiiy o'zbek tilida
+
+MISOLLAR (xuddi shunday qisqa):
+✓ "OpenAI yangi videomodelni taqdim etdi"
+✓ "Google AI'ga 100 milliard sarflaydi"
+✓ "Anthropic Claude 4.7 ni chiqardi"
+✓ "Elon Mask quyosh energiyasidan voz kechdi"
+✓ "Microsoft yangi Copilot funksiyasini taqdim etdi"
 
 Format - faqat JSON:
 {{
   "translations": [
-    "1-tarjima",
-    "2-tarjima",
+    "1-qisqa tarjima",
+    "2-qisqa tarjima",
     ...
   ]
 }}
 
-Faqat JSON qaytaring, hech narsa qo'shmang."""
+Faqat JSON qaytaring."""
 
     try:
         content = gemini_generate(prompt, max_tokens=3000)
