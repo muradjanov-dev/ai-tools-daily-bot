@@ -240,11 +240,10 @@ Faqat JSON formatida qaytaring."""
     content = gemini_generate(prompt, max_tokens=4000)
     return json.loads(content)
 
-def format_telegram_message(tools_data, news_data):
-    """Telegram uchun qisqa xabar formatlaydi"""
+def format_tools_message(tools_data):
+    """AI Tools uchun xabar"""
     today = datetime.now().strftime("%d.%m.%Y")
     tools = tools_data.get("tools", [])
-    news = news_data.get("news", [])
 
     message = f"🤖 *AI TOOLS — {today}*\n\n"
 
@@ -253,31 +252,33 @@ def format_telegram_message(tools_data, news_data):
         name = tool.get("name", "")
         url = tool.get("url", "")
         features = tool.get("features", [])
-        pricing = tool.get("pricing", "").lower()
-
-        price_icon = "💚" if "free" in pricing or "bepul" in pricing else \
-                     "💛" if "freemium" in pricing else "💰"
 
         main_feature = features[0] if features else ""
 
-        message += f"{emoji} [*{name}*]({url}) {price_icon}\n"
+        message += f"{emoji} [*{name}*]({url})\n"
         if main_feature:
             message += f"   _{main_feature}_\n"
         message += "\n"
 
-    if news:
-        message += "━━━━━━━━━━━━━━━\n"
-        message += f"📰 *AI DAYJEST — {today}*\n\n"
-        for item in news:
-            headline = item.get("headline", "")
-            n_url = item.get("url", "")
-            source = item.get("source", "")
-            message += f"● [{headline}]({n_url})\n"
-            if source:
-                message += f"   _Manba: {source}_\n"
-            message += "\n"
+    message += "#AITools #Uzbek"
+    return message
 
-    message += "#AITools #AINews #Uzbek"
+
+def format_news_message(news_data):
+    """AI Yangiliklar uchun alohida xabar"""
+    today = datetime.now().strftime("%d.%m.%Y")
+    news = news_data.get("news", [])
+
+    if not news:
+        return None
+
+    message = f"📰 *AI DAYJEST — {today}*\n\n"
+    for item in news:
+        headline = item.get("headline", "")
+        n_url = item.get("url", "")
+        message += f"● [{headline}]({n_url})\n\n"
+
+    message += "#AINews #Uzbek"
     return message
 
 def send_to_telegram(message):
@@ -342,26 +343,28 @@ def main():
             print(f"⚠️  Yangiliklar olinmadi: {e}")
             news_data = {"news": []}
 
-        # 4. Xabarni formatlash
-        print("\n📝 Xabar formatlanmoqda...")
-        message = format_telegram_message(tools_uz, news_data)
-        print(f"✅ Xabar tayyor ({len(message)} belgi)")
+        # 4. Xabarlarni formatlash (alohida)
+        print("\n📝 Xabarlar formatlanmoqda...")
+        tools_msg = format_tools_message(tools_uz)
+        news_msg = format_news_message(news_data)
+        print(f"✅ Tools xabar: {len(tools_msg)} belgi")
+        if news_msg:
+            print(f"✅ News xabar: {len(news_msg)} belgi")
 
-        # Debug: xabarni ko'rsatish
-        print("\n" + "="*50)
-        print("TELEGRAM XABARI PREVIEW:")
-        print("="*50)
-        print(message)
-        print("="*50 + "\n")
+        # 5. Tools xabarini yuborish
+        print("\n📤 AI Tools xabari yuborilmoqda...")
+        success1 = send_to_telegram(tools_msg)
 
-        # 4. Telegramga yuborish
-        print("📤 Telegramga yuborilmoqda...")
-        success = send_to_telegram(message)
+        # 6. News xabarini yuborish (alohida)
+        success2 = True
+        if news_msg:
+            print("\n📤 AI News xabari yuborilmoqda...")
+            success2 = send_to_telegram(news_msg)
 
-        if success:
-            print("\n🎉 Hammasi muvaffaqiyatli bajarildi!")
+        if success1 and success2:
+            print("\n🎉 Hamma xabarlar muvaffaqiyatli yuborildi!")
         else:
-            print("\n❌ Xabar yuborishda xato yuz berdi")
+            print("\n❌ Ba'zi xabarlarda xato yuz berdi")
 
     except Exception as e:
         error = str(e)
