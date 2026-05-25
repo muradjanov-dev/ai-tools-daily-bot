@@ -85,34 +85,41 @@ def search_ai_tools():
 
     prompt = f"""Siz AI texnologiyalar mutaxassisisiz. Bugun {today}.
 
-Menga bugungi kunda eng yangi, qiziqarli va foydali 5 ta AI tool haqida ma'lumot bering.
+Menga bugungi kunda eng yangi va foydali 3 ta AI tool haqida ma'lumot bering.
 Fokus: {category} sohasidagi toollar.
 
 Har bir tool uchun quyidagi formatda JSON yuboring:
 {{
   "tools": [
     {{
-      "name": "Tool nomi",
+      "name": "Tool nomi (inglizcha asl nomi)",
       "url": "https://...",
-      "emoji": "tegishli emoji",
-      "tagline": "qisqa slogan (inglizcha)",
-      "features": [
-        "asosiy xususiyat (qisqa, 5-8 so'z)"
-      ],
-      "use_cases": "kim foydalanishi (qisqa)",
-      "pricing": "bepul/pullik/freemium",
-      "category": "{category}"
+      "emoji": "tegishli bitta emoji",
+      "who": "Kim foydalana oladi (2-4 ta kasb/jamoa misol)",
+      "what": "Nima uchun ishlatadi (qisqa, 1 jumla)",
+      "how": "Qanday foydalaniladi (qisqa amaliy misol, 1 jumla)"
     }}
   ]
 }}
 
-MUHIM TALABLAR:
-- Real va mavjud toollar bo'lsin (2024-2025 yillarda chiqgan yoki mashhur bo'lgan)
-- Har bir tool haqiqiy URL ga ega bo'lsin
-- Turli-xil toollar tanlang (bir xil kompaniyadan emas)
-- Chindan ham foydali va qiziqarli toollar tanlang
+MISOL:
+{{
+  "name": "Otter.ai",
+  "url": "https://otter.ai",
+  "emoji": "🎙️",
+  "who": "Menejerlar, talabalar, jurnalistlar",
+  "what": "Audio yozuvlarni avtomatik matnga o'giradi",
+  "how": "Zoom yig'ilishingizga ulang — real vaqtda transkripsiya qiladi va xulosa beradi"
+}}
 
-Faqat JSON qaytaring, boshqa matn yo'q."""
+MUHIM TALABLAR:
+- Real va mavjud toollar bo'lsin (2024-2025 yillarda mashhur)
+- Haqiqiy URL'lar
+- Turli xil toollar (bir kompaniyadan emas)
+- "who", "what", "how" o'zbek tilida, qisqa va aniq bo'lsin
+- Hech qanday emoji yoki '*' ishlatmang matn ichida
+
+Faqat JSON qaytaring."""
 
     content = gemini_generate(prompt, max_tokens=4000)
     return json.loads(content)
@@ -221,66 +228,57 @@ Faqat JSON qaytaring, hech narsa qo'shmang."""
 
 
 def translate_to_uzbek(tools_data):
-    """Toollar ma'lumotini o'zbek tiliga tarjima qiladi"""
-    tools_json = json.dumps(tools_data, ensure_ascii=False, indent=2)
+    """Tools ma'lumoti allaqachon o'zbek tilida prompt orqali so'ralgan, qaytaramiz"""
+    return tools_data
 
-    prompt = f"""Quyidagi AI toollar haqidagi ma'lumotni O'ZBEK tiliga tarjima qiling.
+def html_escape(text):
+    """HTML xavfsiz qilish"""
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-{tools_json}
-
-Qoidalar:
-- features va use_cases ni o'zbek tiliga tarjima qiling
-- name, url, emoji, tagline, pricing ni o'zgartirmang
-- category ni ham o'zbek tilida yozing
-- Tarjima tabiiy va tushunarli bo'lsin
-- IT atamalarini (AI, tool, app va h.k.) saqlab qolish mumkin
-
-Faqat JSON formatida qaytaring."""
-
-    content = gemini_generate(prompt, max_tokens=4000)
-    return json.loads(content)
 
 def format_tools_message(tools_data):
-    """AI Tools uchun xabar"""
+    """AI Tools uchun xabar (HTML format)"""
     today = datetime.now().strftime("%d.%m.%Y")
     tools = tools_data.get("tools", [])
 
-    message = f"🤖 *AI TOOLS — {today}*\n\n"
+    message = f"🤖 AI TOOLS — {today}\n\n"
 
     for tool in tools:
         emoji = tool.get("emoji", "🔧")
-        name = tool.get("name", "")
+        name = html_escape(tool.get("name", ""))
         url = tool.get("url", "")
-        features = tool.get("features", [])
+        who = html_escape(tool.get("who", ""))
+        what = html_escape(tool.get("what", ""))
+        how = html_escape(tool.get("how", ""))
 
-        main_feature = features[0] if features else ""
-
-        message += f"{emoji} [*{name}*]({url})\n"
-        if main_feature:
-            message += f"   _{main_feature}_\n"
+        message += f'{emoji} <a href="{url}">{name}</a>\n'
+        if what:
+            message += f"   {what}\n"
+        if who:
+            message += f"   👥 {who}\n"
+        if how:
+            message += f"   💡 {how}\n"
         message += "\n"
 
-    message += "[@ai\\_botaloq](https://t.me/ai_botaloq) — ai botaloq bilan sun'iy intellekt\n\n"
-    message += "#AITools #Uzbek"
+    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> — ai botaloq bilan sun\'iy intellekt'
     return message
 
 
 def format_news_message(news_data):
-    """AI Yangiliklar uchun alohida xabar"""
+    """AI Yangiliklar uchun alohida xabar (HTML format)"""
     today = datetime.now().strftime("%d.%m.%Y")
     news = news_data.get("news", [])
 
     if not news:
         return None
 
-    message = f"📰 *AI DAYJEST — {today}*\n\n"
+    message = f"📰 AI DAYJEST — {today}\n\n"
     for item in news:
-        headline = item.get("headline", "")
+        headline = html_escape(item.get("headline", ""))
         n_url = item.get("url", "")
-        message += f"● [{headline}]({n_url})\n\n"
+        message += f'● <a href="{n_url}">{headline}</a>\n\n'
 
-    message += "[@ai\\_botaloq](https://t.me/ai_botaloq) — ai botaloq bilan sun'iy intellekt\n\n"
-    message += "#AINews #Uzbek"
+    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> — ai botaloq bilan sun\'iy intellekt'
     return message
 
 def send_to_telegram(message):
@@ -290,7 +288,7 @@ def send_to_telegram(message):
     payload = {
         "chat_id": TELEGRAM_CHANNEL_ID,
         "text": message,
-        "parse_mode": "Markdown",
+        "parse_mode": "HTML",
         "disable_web_page_preview": True
     }
 
