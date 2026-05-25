@@ -101,24 +101,24 @@ O'qigan kishi: "Voy, bu boshqacha-ku!" desin. Asli — yodda qolaylik.
 - Ba'zan to'g'ridan-to'g'ri haqiqat: "shuncha vaqtni biror narsaga sarflagansiz, ko'rasiz endi..."
 - "Siz" deb murojaat — go'yo eski tanish bilan suhbat
 
-💝 MEHRLI MUROJAAT (faqat 1 ta toolda, 3 dan birida):
-- "qo'zichog'im" yoki "bo'talog'im" yoki "qadrligim" yoki "yulduzim" yoki "do'mboqqinam" yoki "himmatligim" yoki "jonim"
-- HAR SAFAR boshqa so'z — takrorlanmasin
-- Qolgan 2 toolda mehrli so'zsiz, lekin baribir o'ziga xos ohang saqlansin
+💝 MEHRLI MUROJAATLAR — HAR TOOLDA ISHLATING:
+Quyidagi so'zlardan tanlang va har bir tool tavsifida HECH BO'LMAGANDA 1 marta ishlating:
+- bo'talog'im, qo'zichog'im, do'mboqqinam
+- qadrligim, himmatligim, yulduzim
+- peshqadamim, chempionim, shijoatligim, jonim
 
-🧒 SODDA TIL, LEKIN CHUQUR MA'NO:
-- 5-6 yoshli bola ham tushunsin, lekin donishmand ham bosh chayqasin
-- Texnik atamalar yo'q: "AI" → "aqlli yordamchi", "model" → "aqlli mashina"
-- Har jumla yozishdan oldin: "Bu jumla ichida kichik bir hikmat bormi?" — sinov
+⚡ MUHIM QOIDALAR:
+- Har 3 ta toolda BOSHQA-BOSHQA so'z (takrorlanmasin)
+- So'z tanlash kontekstga mos bo'lsin:
+  • Mehnat/g'alaba tooli → "chempionim", "shijoatligim", "peshqadamim"
+  • Ijodiy tool → "yulduzim", "qadrligim"
+  • Oddiy/iliq tool → "qo'zichog'im", "bo'talog'im", "do'mboqqinam"
+  • Hayotiy/falsafiy → "himmatligim", "jonim"
+- O'rni har xil: ba'zan jumla boshida, ba'zan o'rtada, ba'zan oxirida
+- "what", "who", "tip" — istalganida joylashtirsa bo'ladi
+- Sun'iy emas, tabiiy yangrasin
 
-🎯 UZUNLIK (qisqa, lekin yodda qoladigan):
-- "what" — 1 ta jumla (qisqa hikoya yoki o'tkir kuzatuv)
-- "who" — 1 ta jumla (qisqa, lekin xarakter bilan)
-- "tip" — 1 ta jumla (aniq amaliy harakat)
-
-UZUN TAVSIF YO'Q. Lekin har jumla — yodda qoladigan, hikmatli.
-
-TO'LIQ MISOL (xuddi shu UZUNLIKDA):
+TO'LIQ MISOL (har birida mehrli murojaat — har xil):
 
 {{
   "name": "Otter.ai",
@@ -133,7 +133,7 @@ TO'LIQ MISOL (xuddi shu UZUNLIKDA):
   "name": "Notion AI",
   "url": "https://www.notion.so/product/ai",
   "emoji": "✍️",
-  "what": "Bo'sh qog'oz qo'rquvi yo'q endi — aytasiz, yozadi.",
+  "what": "Bo'sh qog'oz qo'rquvi yo'q endi, yulduzim — aytasiz, yozadi.",
   "who": "Yozadigan har kim: talaba, blog yozuvchi, ofis xodimi.",
   "tip": "\"/\" bosing va istagingizni so'zlar bilan ayting."
 }}
@@ -143,9 +143,21 @@ TO'LIQ MISOL (xuddi shu UZUNLIKDA):
   "url": "https://cursor.com",
   "emoji": "💻",
   "what": "Kod yozish endi suhbatga aylangan, ko'rdingizmi?",
-  "who": "Dasturchilar va dasturchi bo'lmoqchilar.",
-  "tip": "Cmd+K bosib o'z tilingizda gapiring — eshitadi, yulduzim."
+  "who": "Dasturchilar va dasturchi bo'lmoqchilar — chempionim, vaqtni tejaysiz.",
+  "tip": "Cmd+K bosing va o'z tilingizda gapiring — eshitadi."
 }}
+
+🧒 SODDA TIL, LEKIN CHUQUR MA'NO:
+- 5-6 yoshli bola ham tushunsin, lekin donishmand ham bosh chayqasin
+- Texnik atamalar yo'q: "AI" → "aqlli yordamchi", "model" → "aqlli mashina"
+- Har jumla yozishdan oldin: "Bu jumla ichida kichik bir hikmat bormi?" — sinov
+
+🎯 UZUNLIK (qisqa, lekin yodda qoladigan):
+- "what" — 1 ta jumla (qisqa hikoya yoki o'tkir kuzatuv)
+- "who" — 1 ta jumla (qisqa, lekin xarakter bilan)
+- "tip" — 1 ta jumla (aniq amaliy harakat)
+
+UZUN TAVSIF YO'Q. Lekin har jumla — yodda qoladigan, hikmatli.
 
 USLUB MISOLLARI (xuddi shunday — bolaga aytgandek):
 
