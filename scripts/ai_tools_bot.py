@@ -275,7 +275,7 @@ def format_news_message(news_data):
     for item in news:
         headline = html_escape(item.get("headline", ""))
         n_url = item.get("url", "")
-        message += f'● <a href="{n_url}">{headline}</a>\n\n'
+        message += f'🧩 <a href="{n_url}">{headline}</a>\n\n'
 
     message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> — ai botaloq bilan sun\'iy intellekt'
     return message
