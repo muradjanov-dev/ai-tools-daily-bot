@@ -83,40 +83,52 @@ def search_ai_tools():
     day_of_week = datetime.now().weekday()
     category = categories[day_of_week % len(categories)]
 
-    prompt = f"""Siz AI texnologiyalar mutaxassisisiz. Bugun {today}.
+    prompt = f"""Siz iliq, donishmand mentor uslubida yozadigan AI maslahatchisiz. Bugun {today}.
 
-Menga bugungi kunda eng yangi va foydali 3 ta AI tool haqida ma'lumot bering.
+Bugungi kunda eng yangi va foydali 3 ta AI tool haqida ma'lumot bering.
 Fokus: {category} sohasidagi toollar.
 
-Har bir tool uchun quyidagi formatda JSON yuboring:
-{{
-  "tools": [
-    {{
-      "name": "Tool nomi (asl inglizcha)",
-      "url": "https://...",
-      "emoji": "tegishli bitta emoji",
-      "what": "Nima uchun (3-6 so'z, juda qisqa)",
-      "who": "Kimlar uchun (2-3 ta kasb)",
-      "tip": "Tavsiya (1 amaliy maslahat, max 8 so'z)"
-    }}
-  ]
-}}
+YOZUV USLUBI (juda muhim):
+- Iliq, do'stona, biroz falsafiy ohang
+- Ba'zan "qo'zichog'im", "bo'talog'im", "qadrligim", "himmatligim" kabi mehrli murojaatlar (HAR jumlada emas, dozada)
+- Ritorik savollar: "to'g'rimi?", "ha?", "ko'rdingizmi?"
+- Qisqa lekin yodda qolarli jumlalar
+- Texnik atamalar emas, hayot tili
+- Foydalanuvchiga "siz" deb murojaat
 
-MISOL:
+USLUB MISOLI (xuddi shunday yozing):
 {{
   "name": "Otter.ai",
   "url": "https://otter.ai",
   "emoji": "🎙️",
-  "what": "Yig'ilishlarni avto transkripsiya qilish",
-  "who": "Menejerlar, jurnalistlar",
-  "tip": "Zoom'ga ulang — xulosa beradi"
+  "what": "Yig'ilishlardagi har bir so'zni ushlab qoladi — havoga uchmaydi, qo'zichog'im",
+  "who": "Vaqtni qadrlaydiganlar, menejerlar, jurnalistlar",
+  "tip": "Zoom'ga ulang — qolgan ishni o'zi qiladi, ko'rasiz"
+}}
+
+YANA BIR MISOL:
+{{
+  "name": "Notion AI",
+  "url": "https://www.notion.so/product/ai",
+  "emoji": "✍️",
+  "what": "Bo'sh qog'oz qo'rquvini yo'q qiladi, do'mboqqinam",
+  "who": "Yozuvchilar, talabalar, ish odamlari",
+  "tip": "Eslatmalar tagiga '/' bosing — AI o'zini ko'rsatadi"
 }}
 
 QOIDALAR:
 - Real toollar (2024-2025 mashhur), haqiqiy URL'lar
 - Turli kompaniyalardan
-- HAR JAVOB JUDA QISQA bo'lsin — uzun jumla yo'q
-- Hech qanday emoji yoki '*' ishlatmang matn ichida
+- "what" va "tip" iliq mentor uslubda, "who" — qisqa kasb ro'yxati
+- Hech qaysi maydonda '*' yoki emoji bo'lmasin (emoji faqat alohida maydon)
+- Maxsus jumlalar yodda qolsin
+
+Format JSON:
+{{
+  "tools": [
+    {{ "name": "...", "url": "...", "emoji": "...", "what": "...", "who": "...", "tip": "..." }}
+  ]
+}}
 
 Faqat JSON qaytaring."""
 
@@ -259,7 +271,7 @@ def format_tools_message(tools_data):
             message += f"<b>Tavsiya:</b> {tip}\n"
         message += "\n"
 
-    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> — ai botaloq bilan sun\'iy intellekt'
+    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - bilan sun\'iy intellekt'
     return message
 
 
@@ -277,7 +289,7 @@ def format_news_message(news_data):
         n_url = item.get("url", "")
         message += f'🧩 <a href="{n_url}">{headline}</a>\n\n'
 
-    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> — ai botaloq bilan sun\'iy intellekt'
+    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - bilan sun\'iy intellekt'
     return message
 
 def send_to_telegram(message):
