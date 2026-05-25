@@ -36,20 +36,32 @@ genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 
-def gemini_generate(prompt: str, max_tokens: int = 2000) -> str:
-    """Gemini orqali matn yaratadi va JSON ni tozalaydi"""
+def gemini_generate(prompt: str, max_tokens: int = 4000, json_mode: bool = True) -> str:
+    """Gemini orqali matn yaratadi. JSON mode bilan to'g'ri JSON kafolat beradi"""
+    config_kwargs = {
+        "max_output_tokens": max_tokens,
+        "temperature": 0.7,
+    }
+    if json_mode:
+        config_kwargs["response_mime_type"] = "application/json"
+
     response = model.generate_content(
         prompt,
-        generation_config=genai.types.GenerationConfig(
-            max_output_tokens=max_tokens,
-            temperature=0.7,
-        )
+        generation_config=genai.types.GenerationConfig(**config_kwargs)
     )
+
+    # Tekshirish - javob bormi
+    if not response.candidates or not response.candidates[0].content.parts:
+        raise ValueError(f"Gemini bo'sh javob qaytardi. Finish reason: {response.candidates[0].finish_reason if response.candidates else 'none'}")
+
     content = response.text.strip()
+
+    # Markdown code block tozalash (JSON mode da kelmasligi kerak, lekin xavfsizlik uchun)
     if "```json" in content:
         content = content.split("```json")[1].split("```")[0].strip()
     elif "```" in content:
         content = content.split("```")[1].split("```")[0].strip()
+
     return content
 
 def search_ai_tools():
@@ -102,7 +114,7 @@ MUHIM TALABLAR:
 
 Faqat JSON qaytaring, boshqa matn yo'q."""
 
-    content = gemini_generate(prompt, max_tokens=2000)
+    content = gemini_generate(prompt, max_tokens=4000)
     return json.loads(content)
 
 
@@ -190,13 +202,17 @@ Format - faqat JSON:
 
 Faqat JSON qaytaring, hech narsa qo'shmang."""
 
-    content = gemini_generate(prompt, max_tokens=1500)
-    translations = json.loads(content).get("translations", [])
+    try:
+        content = gemini_generate(prompt, max_tokens=3000)
+        translations = json.loads(content).get("translations", [])
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"⚠️  Tarjima xatosi ({e}), inglizcha sarlavhalar ishlatiladi")
+        translations = [item["title"] for item in news_items]
 
     result = []
     for item, translation in zip(news_items, translations):
         result.append({
-            "headline": translation,
+            "headline": translation or item["title"],
             "url": item["url"],
             "source": item["source"]
         })
@@ -221,7 +237,7 @@ Qoidalar:
 
 Faqat JSON formatida qaytaring."""
 
-    content = gemini_generate(prompt, max_tokens=2000)
+    content = gemini_generate(prompt, max_tokens=4000)
     return json.loads(content)
 
 def format_telegram_message(tools_data, news_data):
