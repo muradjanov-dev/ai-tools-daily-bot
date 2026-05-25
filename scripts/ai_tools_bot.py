@@ -105,7 +105,7 @@ O'qigan kishi: "Voy, bu boshqacha-ku!" desin. Asli — yodda qolaylik.
 Quyidagi so'zlardan tanlang va har bir tool tavsifida HECH BO'LMAGANDA 1 marta ishlating:
 - bo'talog'im, qo'zichog'im, do'mboqqinam
 - qadrligim, himmatligim, yulduzim
-- peshqadamim, chempionim, shijoatligim, jonim
+- peshqadamim, chempionim, shijoatligim
 
 ⚡ MUHIM QOIDALAR:
 - Har 3 ta toolda BOSHQA-BOSHQA so'z (takrorlanmasin)
@@ -113,7 +113,7 @@ Quyidagi so'zlardan tanlang va har bir tool tavsifida HECH BO'LMAGANDA 1 marta i
   • Mehnat/g'alaba tooli → "chempionim", "shijoatligim", "peshqadamim"
   • Ijodiy tool → "yulduzim", "qadrligim"
   • Oddiy/iliq tool → "qo'zichog'im", "bo'talog'im", "do'mboqqinam"
-  • Hayotiy/falsafiy → "himmatligim", "jonim"
+  • Hayotiy/falsafiy → "himmatligim"
 - O'rni har xil: ba'zan jumla boshida, ba'zan o'rtada, ba'zan oxirida
 - "what", "who", "tip" — istalganida joylashtirsa bo'ladi
 - Sun'iy emas, tabiiy yangrasin
