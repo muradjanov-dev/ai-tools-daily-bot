@@ -88,51 +88,57 @@ def search_ai_tools():
 Bugungi kunda eng yangi va foydali 3 ta AI tool haqida ma'lumot bering.
 Fokus: {category} sohasidagi toollar.
 
-YOZUV USLUBI — KREATIVLIK MUHIM:
-- Iliq, do'stona, biroz falsafiy ohang — lekin SHABLON EMAS
-- Har bir tool tavsifini BOSHQACHA qiling: birida metafora, ikkinchisida ritorik savol, uchinchisida kuzatuv-haqiqat
-- "qo'zichog'im / bo'talog'im / qadrligim / himmatligim / do'mboqqinam / yulduzim" — bu so'zlarni FAQAT 1 ta tool da ishlating (3 ta toolning birida), va har safar boshqa so'z
-- Qolgan 2 ta toolda — mehrli murojaatsiz, lekin baribir iliq va donishmand
+YOZUV USLUBI — JUDA MUHIM:
+🎯 ASOSIY QOIDA: Xuddi 5-6 yoshli bolaga tushuntirayotgandek yozing
+- Eng sodda so'zlar — texnik atamalar yo'q
+- "AI" o'rniga "aqlli yordamchi"
+- "Transcription" o'rniga "ovozni yozadi"
+- "Generate" o'rniga "yaratadi", "yasaydi"
+- Bolaga tushunarli misollar: "xuddi do'sting kabi", "qog'ozga yozish kabi"
+- Hatto bobosi yoki onasi ham tushunsin
+
+🎯 ILIQLIK:
+- "qo'zichog'im / bo'talog'im / qadrligim / yulduzim / do'mboqqinam" — FAQAT 1 ta toolda (3 dan birida), har gal boshqacha
+- Qolgan 2 toolda — toza, sodda, lekin baribir do'stona
 - "siz" deb murojaat
-- Texnik atamalar emas, hayot tili — metaforalar, kichik kuzatuvlar
 
-USLUB MISOLLARI (har xil — ko'ring):
+USLUB MISOLLARI (xuddi shunday — bolaga aytgandek):
 
-1-USLUB (metafora + savol):
+1-MISOL (sodda + bitta murojaat):
 {{
   "name": "Otter.ai",
   "url": "https://otter.ai",
   "emoji": "🎙️",
-  "what": "Yig'ilishdagi so'zlar havoga sochilib ketishini ko'rganmisiz? Mana shu kompaniya ularni qog'ozga tushiradi.",
-  "who": "Menejerlar, jurnalistlar, sotuvchilar",
-  "tip": "Zoom'ga ulang — yig'ilish tugashi bilan xulosa qo'lingizda turadi"
+  "what": "Yig'ilishlaringizni eshitib, hammasini qog'ozga yozib beradi. Endi qo'lda yozish shart emas, qo'zichog'im.",
+  "who": "Ko'p uchrashuv qiladiganlar — boshliq, sotuvchi, jurnalist",
+  "tip": "Telefoningizga yuklab, gaplashayotganingizda qo'yib qo'ying"
 }}
 
-2-USLUB (ohista mehr — bitta murojaat so'z bilan):
+2-MISOL (toza sodda):
 {{
   "name": "Notion AI",
   "url": "https://www.notion.so/product/ai",
   "emoji": "✍️",
-  "what": "Bo'sh qog'oz oldida o'tirib qolganmisiz? Bu yerda u qo'rquv mavjud emas, qo'zichog'im.",
-  "who": "Yozuvchilar, talabalar, kontent yaratuvchilar",
-  "tip": "Eslatmalar tagiga / bosing — qolgani o'zi keladi"
+  "what": "Sizning o'rningizga xat, eslatma, ro'yxat yozib beradi. Hatto she'r ham!",
+  "who": "Yozadigan har kim — talaba, blog yozuvchi, ishchi",
+  "tip": "Bo'sh joyga / belgisini bosing va nima xohlasangiz ayting"
 }}
 
-3-USLUB (sodda kuzatuv, mehrli murojaatsiz):
+3-MISOL (juda sodda):
 {{
   "name": "Cursor",
   "url": "https://cursor.com",
   "emoji": "💻",
-  "what": "Kod yozish endi suhbatga aylangan. Ayting — yozib beradi.",
-  "who": "Dasturchilar, indie-hackerlar",
-  "tip": "Cmd+K bosing va o'z tilingizda gapiring — kompyuter sizni eshitadi"
+  "what": "Kompyuter dasturi yozishni o'z tilingizda gapirib bajaradi. Aytasiz — yozadi.",
+  "who": "Dasturchilar va dasturchi bo'lmoqchilar",
+  "tip": "Ekranga qarab \"menga oddiy kalkulyator yoz\" deyish kifoya"
 }}
 
 QOIDALAR:
 - Real toollar (2024-2025 mashhur), haqiqiy URL'lar, turli kompaniyalardan
+- Har bir jumla — sodda, oddiy hayot so'zlari
+- Texnik atamalar AVTOMATIK tarjima: "API"="ulanish", "model"="aqlli yordamchi", "transcription"="ovozni yozish"
 - 3 ta tooldan FAQAT BITTASIDA mehrli murojaat (har gal boshqa so'z)
-- Boshqa 2 ta toolda — toza, iliq lekin shablon-so'zsiz
-- Har bir tavsif BOSHQACHA usulda yozilsin
 - Maydonlar ichida '*' yoki qo'shimcha emoji bo'lmasin
 
 Format JSON:
