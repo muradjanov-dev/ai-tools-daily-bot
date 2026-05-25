@@ -45,7 +45,15 @@ jobs:
           TEST_MODE: ${{ github.event.inputs.test_mode || 'false' }}
         run: |
           cd scripts
-          python ai_tools_bot.py
+          python -u ai_tools_bot.py 2>&1 | tee /tmp/bot_log.txt
+
+      - name: 📋 Log yuklab olish (har doim)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bot-logs
+          path: /tmp/bot_log.txt
+          retention-days: 7
 
       - name: ✅ Muvaffaqiyat xabari
         if: success()
