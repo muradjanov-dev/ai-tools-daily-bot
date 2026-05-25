@@ -317,7 +317,7 @@ def format_tools_message(tools_data):
             message += f"<b>Tavsiya:</b>\n{tip}\n"
         message += "\n— — — — — — — — —\n\n"
 
-    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - bilan sun\'iy intellekt'
+    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - sodda tilda sun\'iy intellekt'
     return message
 
 
@@ -337,7 +337,7 @@ def format_news_message(news_data):
         n_url = item.get("url", "")
         message += f'🧩 <a href="{n_url}">{headline}</a>\n\n'
 
-    message += '\n<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - bilan sun\'iy intellekt'
+    message += '\n<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - sodda tilda sun\'iy intellekt'
     return message
 
 def send_to_telegram(message):
