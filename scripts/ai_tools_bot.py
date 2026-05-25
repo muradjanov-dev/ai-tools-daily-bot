@@ -83,6 +83,52 @@ Faqat JSON qaytaring, boshqa matn yo'q."""
 
     return json.loads(content)
 
+def search_ai_news():
+    """Bugungi top 5 AI yangiliklarini topadi"""
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    prompt = f"""Siz AI yangiliklar muharririsiz. Bugun {today}.
+
+Bugungi yoki shu haftadagi eng so'nggi va eng MUHIM 5 ta AI yangiligini toping.
+
+Format - JSON:
+{{
+  "news": [
+    {{
+      "headline": "Juda QISQA, KREATIV va HOCKLI sarlavha o'zbek tilida",
+      "url": "https://...",
+      "emoji": "tegishli emoji"
+    }}
+  ]
+}}
+
+MUHIM QOIDALAR:
+🔥 Sarlavha 4-7 so'zdan oshmasin
+🔥 Sarlavha o'zbek tilida, KREATIV, HOCKLI va QIZIQTIRUVCHI bo'lsin
+   Masalan: "OpenAI yana bombasini portlatdi!", "Google'ning yangi maxfiyligi",
+   "Anthropic 100 milliardni urdi", "Elon Musk AI'ga qaytdi"
+🔥 Real va aniq manbalardan URL'lar (TechCrunch, The Verge, OpenAI blog, Anthropic, MIT, etc.)
+🔥 Bugungi yoki oxirgi 2-3 kundagi haqiqiy yangiliklar
+🔥 Turli kompaniyalar (faqat OpenAI emas - Anthropic, Google, Meta, DeepSeek, xAI va h.k.)
+🔥 Emoji yangilik mavzusiga mos kelsin
+
+Faqat JSON qaytaring."""
+
+    response = client.messages.create(
+        model="claude-opus-4-7",
+        max_tokens=1500,
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    content = response.content[0].text.strip()
+    if "```json" in content:
+        content = content.split("```json")[1].split("```")[0].strip()
+    elif "```" in content:
+        content = content.split("```")[1].split("```")[0].strip()
+
+    return json.loads(content)
+
+
 def translate_to_uzbek(tools_data):
     """Toollar ma'lumotini o'zbek tiliga tarjima qiladi"""
     tools_json = json.dumps(tools_data, ensure_ascii=False, indent=2)
@@ -115,14 +161,15 @@ Faqat JSON formatida qaytaring."""
 
     return json.loads(content)
 
-def format_telegram_message(tools_data):
+def format_telegram_message(tools_data, news_data):
     """Telegram uchun qisqa xabar formatlaydi"""
     today = datetime.now().strftime("%d.%m.%Y")
     tools = tools_data.get("tools", [])
+    news = news_data.get("news", [])
 
     message = f"🤖 *AI TOOLS — {today}*\n\n"
 
-    for i, tool in enumerate(tools, 1):
+    for tool in tools:
         emoji = tool.get("emoji", "🔧")
         name = tool.get("name", "")
         url = tool.get("url", "")
@@ -132,7 +179,6 @@ def format_telegram_message(tools_data):
         price_icon = "💚" if "free" in pricing or "bepul" in pricing else \
                      "💛" if "freemium" in pricing else "💰"
 
-        # Faqat 1 ta eng muhim xususiyat
         main_feature = features[0] if features else ""
 
         message += f"{emoji} [*{name}*]({url}) {price_icon}\n"
@@ -140,7 +186,17 @@ def format_telegram_message(tools_data):
             message += f"   _{main_feature}_\n"
         message += "\n"
 
-    message += "#AITools #Uzbek"
+    if news:
+        message += "━━━━━━━━━━━━━━━\n"
+        message += "🔥 *AI YANGILIKLARI*\n\n"
+        for item in news:
+            n_emoji = item.get("emoji", "📰")
+            headline = item.get("headline", "")
+            n_url = item.get("url", "")
+            message += f"{n_emoji} [{headline}]({n_url})\n"
+        message += "\n"
+
+    message += "#AITools #AINews #Uzbek"
     return message
 
 def send_to_telegram(message):
@@ -193,9 +249,18 @@ def main():
         tools_uz = translate_to_uzbek(tools_data)
         print("✅ Tarjima tugadi")
 
-        # 3. Xabarni formatlash
+        # 3. AI yangiliklarni topish
+        print("\n📰 AI yangiliklari qidirilmoqda...")
+        try:
+            news_data = search_ai_news()
+            print(f"✅ {len(news_data.get('news', []))} ta yangilik topildi")
+        except Exception as e:
+            print(f"⚠️  Yangiliklar topilmadi: {e}")
+            news_data = {"news": []}
+
+        # 4. Xabarni formatlash
         print("\n📝 Xabar formatlanmoqda...")
-        message = format_telegram_message(tools_uz)
+        message = format_telegram_message(tools_uz, news_data)
         print(f"✅ Xabar tayyor ({len(message)} belgi)")
 
         # Debug: xabarni ko'rsatish
