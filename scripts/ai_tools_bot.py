@@ -88,40 +88,52 @@ def search_ai_tools():
 Bugungi kunda eng yangi va foydali 3 ta AI tool haqida ma'lumot bering.
 Fokus: {category} sohasidagi toollar.
 
-YOZUV USLUBI (juda muhim):
-- Iliq, do'stona, biroz falsafiy ohang
-- Ba'zan "qo'zichog'im", "bo'talog'im", "qadrligim", "himmatligim" kabi mehrli murojaatlar (HAR jumlada emas, dozada)
-- Ritorik savollar: "to'g'rimi?", "ha?", "ko'rdingizmi?"
-- Qisqa lekin yodda qolarli jumlalar
-- Texnik atamalar emas, hayot tili
-- Foydalanuvchiga "siz" deb murojaat
+YOZUV USLUBI — KREATIVLIK MUHIM:
+- Iliq, do'stona, biroz falsafiy ohang — lekin SHABLON EMAS
+- Har bir tool tavsifini BOSHQACHA qiling: birida metafora, ikkinchisida ritorik savol, uchinchisida kuzatuv-haqiqat
+- "qo'zichog'im / bo'talog'im / qadrligim / himmatligim / do'mboqqinam / yulduzim" — bu so'zlarni FAQAT 1 ta tool da ishlating (3 ta toolning birida), va har safar boshqa so'z
+- Qolgan 2 ta toolda — mehrli murojaatsiz, lekin baribir iliq va donishmand
+- "siz" deb murojaat
+- Texnik atamalar emas, hayot tili — metaforalar, kichik kuzatuvlar
 
-USLUB MISOLI (xuddi shunday yozing):
+USLUB MISOLLARI (har xil — ko'ring):
+
+1-USLUB (metafora + savol):
 {{
   "name": "Otter.ai",
   "url": "https://otter.ai",
   "emoji": "🎙️",
-  "what": "Yig'ilishlardagi har bir so'zni ushlab qoladi — havoga uchmaydi, qo'zichog'im",
-  "who": "Vaqtni qadrlaydiganlar, menejerlar, jurnalistlar",
-  "tip": "Zoom'ga ulang — qolgan ishni o'zi qiladi, ko'rasiz"
+  "what": "Yig'ilishdagi so'zlar havoga sochilib ketishini ko'rganmisiz? Mana shu kompaniya ularni qog'ozga tushiradi.",
+  "who": "Menejerlar, jurnalistlar, sotuvchilar",
+  "tip": "Zoom'ga ulang — yig'ilish tugashi bilan xulosa qo'lingizda turadi"
 }}
 
-YANA BIR MISOL:
+2-USLUB (ohista mehr — bitta murojaat so'z bilan):
 {{
   "name": "Notion AI",
   "url": "https://www.notion.so/product/ai",
   "emoji": "✍️",
-  "what": "Bo'sh qog'oz qo'rquvini yo'q qiladi, do'mboqqinam",
-  "who": "Yozuvchilar, talabalar, ish odamlari",
-  "tip": "Eslatmalar tagiga '/' bosing — AI o'zini ko'rsatadi"
+  "what": "Bo'sh qog'oz oldida o'tirib qolganmisiz? Bu yerda u qo'rquv mavjud emas, qo'zichog'im.",
+  "who": "Yozuvchilar, talabalar, kontent yaratuvchilar",
+  "tip": "Eslatmalar tagiga / bosing — qolgani o'zi keladi"
+}}
+
+3-USLUB (sodda kuzatuv, mehrli murojaatsiz):
+{{
+  "name": "Cursor",
+  "url": "https://cursor.com",
+  "emoji": "💻",
+  "what": "Kod yozish endi suhbatga aylangan. Ayting — yozib beradi.",
+  "who": "Dasturchilar, indie-hackerlar",
+  "tip": "Cmd+K bosing va o'z tilingizda gapiring — kompyuter sizni eshitadi"
 }}
 
 QOIDALAR:
-- Real toollar (2024-2025 mashhur), haqiqiy URL'lar
-- Turli kompaniyalardan
-- "what" va "tip" iliq mentor uslubda, "who" — qisqa kasb ro'yxati
-- Hech qaysi maydonda '*' yoki emoji bo'lmasin (emoji faqat alohida maydon)
-- Maxsus jumlalar yodda qolsin
+- Real toollar (2024-2025 mashhur), haqiqiy URL'lar, turli kompaniyalardan
+- 3 ta tooldan FAQAT BITTASIDA mehrli murojaat (har gal boshqa so'z)
+- Boshqa 2 ta toolda — toza, iliq lekin shablon-so'zsiz
+- Har bir tavsif BOSHQACHA usulda yozilsin
+- Maydonlar ichida '*' yoki qo'shimcha emoji bo'lmasin
 
 Format JSON:
 {{
