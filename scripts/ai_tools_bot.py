@@ -87,7 +87,7 @@ def search_ai_news():
     """Bugungi top 5 AI yangiliklarini topadi"""
     today = datetime.now().strftime("%Y-%m-%d")
 
-    prompt = f"""Siz AI yangiliklar muharririsiz. Bugun {today}.
+    prompt = f"""Siz professional AI yangiliklar muharririsiz. Bugun {today}.
 
 Bugungi yoki shu haftadagi eng so'nggi va eng MUHIM 5 ta AI yangiligini toping.
 
@@ -95,22 +95,29 @@ Format - JSON:
 {{
   "news": [
     {{
-      "headline": "Juda QISQA, KREATIV va HOCKLI sarlavha o'zbek tilida",
-      "url": "https://...",
-      "emoji": "tegishli emoji"
+      "headline": "Informativ, rasmiy uslubdagi sarlavha o'zbek tilida",
+      "url": "https://..."
     }}
   ]
 }}
 
-MUHIM QOIDALAR:
-🔥 Sarlavha 4-7 so'zdan oshmasin
-🔥 Sarlavha o'zbek tilida, KREATIV, HOCKLI va QIZIQTIRUVCHI bo'lsin
-   Masalan: "OpenAI yana bombasini portlatdi!", "Google'ning yangi maxfiyligi",
-   "Anthropic 100 milliardni urdi", "Elon Musk AI'ga qaytdi"
-🔥 Real va aniq manbalardan URL'lar (TechCrunch, The Verge, OpenAI blog, Anthropic, MIT, etc.)
-🔥 Bugungi yoki oxirgi 2-3 kundagi haqiqiy yangiliklar
-🔥 Turli kompaniyalar (faqat OpenAI emas - Anthropic, Google, Meta, DeepSeek, xAI va h.k.)
-🔥 Emoji yangilik mavzusiga mos kelsin
+USLUB MISOLLARI (xuddi shunday bo'lsin):
+✓ "Google istalgan kontentni boshqa formatga o'tkazuvchi yangi AI modelini ko'rsatdi"
+✓ "Microsoft hisoboti: Ba'zida AI xizmatlaridan foydalanish xodimlardan ham qimmat"
+✓ "Ferrari va IBM muxlislar uchun maxsus AI yordamchini ishga tushirdi"
+✓ "Elon Musk xAI loyihasi uchun tabiat resurslariga e'tibor qaratmoqda"
+✓ "Anthropic Claude'ning yangi versiyasini taqdim etdi"
+✓ "OpenAI 5 milliard dollarlik yangi raund yopdi"
+
+QOIDALAR:
+📰 Sarlavha 8-15 so'zdan iborat bo'lsin (to'liq jumla)
+📰 RASMIY, INFORMATIV uslub — clickbait emas, JURNALISTIK ohang
+📰 Aniq fakt: kim, nima qildi (kompaniya nomi + harakat + ob'ekt)
+📰 O'zbek tilida tabiiy, grammatik to'g'ri bo'lsin
+📰 Real manbalardan URL'lar (TechCrunch, The Verge, Reuters, OpenAI, Anthropic blog)
+📰 Oxirgi 2-3 kundagi haqiqiy yangiliklar
+📰 Turli kompaniyalar (OpenAI, Anthropic, Google, Meta, Microsoft, xAI, DeepSeek va h.k.)
+📰 Emoji KERAK EMAS — sarlavha o'zi gapirsin
 
 Faqat JSON qaytaring."""
 
@@ -188,13 +195,11 @@ def format_telegram_message(tools_data, news_data):
 
     if news:
         message += "━━━━━━━━━━━━━━━\n"
-        message += "🔥 *AI YANGILIKLARI*\n\n"
+        message += f"📰 *AI DAYJEST — {today}*\n\n"
         for item in news:
-            n_emoji = item.get("emoji", "📰")
             headline = item.get("headline", "")
             n_url = item.get("url", "")
-            message += f"{n_emoji} [{headline}]({n_url})\n"
-        message += "\n"
+            message += f"● [{headline}]({n_url})\n\n"
 
     message += "#AITools #AINews #Uzbek"
     return message
