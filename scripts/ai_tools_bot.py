@@ -92,12 +92,12 @@ Har bir tool uchun quyidagi formatda JSON yuboring:
 {{
   "tools": [
     {{
-      "name": "Tool nomi (inglizcha asl nomi)",
+      "name": "Tool nomi (asl inglizcha)",
       "url": "https://...",
       "emoji": "tegishli bitta emoji",
-      "who": "Kim foydalana oladi (2-4 ta kasb/jamoa misol)",
-      "what": "Nima uchun ishlatadi (qisqa, 1 jumla)",
-      "how": "Qanday foydalaniladi (qisqa amaliy misol, 1 jumla)"
+      "what": "Nima uchun (3-6 so'z, juda qisqa)",
+      "who": "Kimlar uchun (2-3 ta kasb)",
+      "tip": "Tavsiya (1 amaliy maslahat, max 8 so'z)"
     }}
   ]
 }}
@@ -107,16 +107,15 @@ MISOL:
   "name": "Otter.ai",
   "url": "https://otter.ai",
   "emoji": "🎙️",
-  "who": "Menejerlar, talabalar, jurnalistlar",
-  "what": "Audio yozuvlarni avtomatik matnga o'giradi",
-  "how": "Zoom yig'ilishingizga ulang — real vaqtda transkripsiya qiladi va xulosa beradi"
+  "what": "Yig'ilishlarni avto transkripsiya qilish",
+  "who": "Menejerlar, jurnalistlar",
+  "tip": "Zoom'ga ulang — xulosa beradi"
 }}
 
-MUHIM TALABLAR:
-- Real va mavjud toollar bo'lsin (2024-2025 yillarda mashhur)
-- Haqiqiy URL'lar
-- Turli xil toollar (bir kompaniyadan emas)
-- "who", "what", "how" o'zbek tilida, qisqa va aniq bo'lsin
+QOIDALAR:
+- Real toollar (2024-2025 mashhur), haqiqiy URL'lar
+- Turli kompaniyalardan
+- HAR JAVOB JUDA QISQA bo'lsin — uzun jumla yo'q
 - Hech qanday emoji yoki '*' ishlatmang matn ichida
 
 Faqat JSON qaytaring."""
@@ -247,17 +246,17 @@ def format_tools_message(tools_data):
         emoji = tool.get("emoji", "🔧")
         name = html_escape(tool.get("name", ""))
         url = tool.get("url", "")
-        who = html_escape(tool.get("who", ""))
         what = html_escape(tool.get("what", ""))
-        how = html_escape(tool.get("how", ""))
+        who = html_escape(tool.get("who", ""))
+        tip = html_escape(tool.get("tip", tool.get("how", "")))
 
-        message += f'{emoji} <a href="{url}">{name}</a>\n'
+        message += f'{emoji} <a href="{url}"><b>{name}</b></a>\n'
         if what:
-            message += f"   {what}\n"
+            message += f"🎯 <b>Nima uchun?</b> {what}\n"
         if who:
-            message += f"   👥 {who}\n"
-        if how:
-            message += f"   💡 {how}\n"
+            message += f"👥 <b>Kimlar uchun?</b> {who}\n"
+        if tip:
+            message += f"💡 <b>Tavsiya:</b> {tip}\n"
         message += "\n"
 
     message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> — ai botaloq bilan sun\'iy intellekt'
