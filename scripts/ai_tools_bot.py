@@ -111,16 +111,39 @@ O'qigan kishi: "Voy, bu boshqacha-ku!" desin. Asli — yodda qolaylik.
 - Texnik atamalar yo'q: "AI" → "aqlli yordamchi", "model" → "aqlli mashina"
 - Har jumla yozishdan oldin: "Bu jumla ichida kichik bir hikmat bormi?" — sinov
 
-🎯 MISOL (xuddi shu DARAJADA chuqur va g'ayrioddiy bo'lsin):
+🎯 UZUNLIK MUHIM:
+- "what" — 2-3 jumla (kichik hikoya), nafaqat ta'rif
+- "who" — 1-2 jumla (kasb ro'yxati EMAS, "kimning hayotini o'zgartirishi" hikoyasi)
+- "tip" — 1-2 jumla (amaliy maslahat + nima sodir bo'lishi)
 
-1-tool (metafora + mehrli murojaat):
-"Yig'ilishdagi so'zlar havoda sochilib ketadi-ku, qo'zichog'im. Bu kompaniya esa har birini ushlab, qog'ozga tushiradi. Endi xotirangiz yengillashadi."
+TO'LIQ MISOL (xuddi shu darajada uzun va hikoyali):
 
-2-tool (kuzatuv + ritorik savol):
-"Bo'sh qog'oz oldida qancha o'tirgansiz? Bu yerda u qo'rquv yo'q. Aytasiz — so'z keladi. Ko'rdingizmi, qanchalar oson."
+{{
+  "name": "Otter.ai",
+  "url": "https://otter.ai",
+  "emoji": "🎙️",
+  "what": "Yig'ilishdagi so'zlar havoda sochilib ketadi-ku, qo'zichog'im. Mana bu aqlli yordamchi har bir so'zni ushlab, qog'ozga tushiradi. Hech narsa esdan chiqmaydi, endi xotirangiz yengillashadi.",
+  "who": "Kuniga bir necha uchrashuvga kiradiganlar uchun najot. Boshliq, sotuvchi, jurnalist — barchasi vaqtini tejaydi va asosiy ishga qaytadi.",
+  "tip": "Zoom yoki Google Meet'ga ulang — yig'ilish tugashi bilan qisqacha xulosa qo'lingizda. Endi qog'ozga yozish kerak emas, faqat eshiting va o'ylang."
+}}
 
-3-tool (donishmandlik + sodda):
-"Kod yozish endi suhbatga aylangan. O'z tilingizda gapirasiz — kompyuter sizni eshitadi. Bir paytlar kitobxonlik yo'qoladi deyishgan, lekin yozish endi yangicha bo'ladi."
+{{
+  "name": "Notion AI",
+  "url": "https://www.notion.so/product/ai",
+  "emoji": "✍️",
+  "what": "Bo'sh qog'oz oldida qancha o'tirib qolgansiz? Bu yerda u qo'rquv yo'q. Aytasiz — so'z keladi. Eslatma kerakmi, xat kerakmi, ro'yxat — barchasini bir lahzada beradi.",
+  "who": "Yozishni ish qiluvchilar uchun: blog yozuvchi, talaba, ofis xodimi. Hatto onangiz ham retsept yozishda foydalansa bo'ladi.",
+  "tip": "Eslatma ichida \"/\" belgisini bosing va o'z so'zlaringiz bilan ayting nima kerakligini. Qolgani — aqlli yordamchining ishi, yulduzim."
+}}
+
+{{
+  "name": "Cursor",
+  "url": "https://cursor.com",
+  "emoji": "💻",
+  "what": "Kod yozish endi mashinaga aytib turish bilan bo'lib qoldi. O'z tilingizda gapirasiz: \"Menga kalkulyator yoz\" deysiz — yozadi. Kompyuter endi sizning yordamchingiz.",
+  "who": "Dasturchilar uchun emin pana, dasturchi bo'lmoqchilar uchun ochiq eshik. Yangi boshlovchi ham, tajribali ham bir xil quvvat oladi.",
+  "tip": "Cmd+K bosing va istagingizni aniq ayting. Aniqroq aytsangiz — aniqroq yozadi. Bir paytlar dasturchi bo'lish yillab vaqt talab qilardi, endi haftalik mavzu."
+}}
 
 USLUB MISOLLARI (xuddi shunday — bolaga aytgandek):
 
@@ -273,12 +296,32 @@ Format - faqat JSON:
 
 Faqat JSON qaytaring."""
 
-    try:
-        content = gemini_generate(prompt, max_tokens=3000)
-        translations = json.loads(content).get("translations", [])
-    except (json.JSONDecodeError, ValueError) as e:
-        print(f"⚠️  Tarjima xatosi ({e}), inglizcha sarlavhalar ishlatiladi")
-        translations = [item["title"] for item in news_items]
+    translations = []
+    for attempt in range(3):
+        try:
+            content = gemini_generate(prompt, max_tokens=3000)
+            translations = json.loads(content).get("translations", [])
+            if len(translations) == len(news_items):
+                break
+        except (json.JSONDecodeError, ValueError) as e:
+            print(f"⚠️  Tarjima urinish #{attempt+1} xato: {e}")
+            continue
+
+    if len(translations) != len(news_items):
+        print(f"⚠️  Tarjima muvaffaqiyatsiz — alohida tarjima qilamiz")
+        translations = []
+        for item in news_items:
+            single_prompt = f"""Bu inglizcha AI yangilik sarlavhasini O'ZBEK tiliga kreativ tarjima qiling.
+JURNALISTIK uslub: 8-12 so'z, INFORMATIV.
+
+Sarlavha: {item['title']}
+
+Faqat o'zbekcha tarjimani qaytaring, hech narsa qo'shmang."""
+            try:
+                t = gemini_generate(single_prompt, max_tokens=200, json_mode=False).strip().strip('"').strip()
+                translations.append(t if t else item["title"])
+            except Exception:
+                translations.append(item["title"])
 
     result = []
     for item, translation in zip(news_items, translations):
