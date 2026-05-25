@@ -88,31 +88,39 @@ def search_ai_tools():
 Bugungi kunda eng yangi va foydali 3 ta AI tool haqida ma'lumot bering.
 Fokus: {category} sohasidagi toollar.
 
-YOZUV USLUBI — BU BIZNING BRENDIMIZ:
+⚠️ DIQQAT — BU BIZNING BENZARSIZ BRENDIMIZ:
 
-🎨 Biz "Ai bo'taloq" kanalimiz — o'qigan har bir kishi bizni esda saqlab qolsin.
-Bu — boshqa hech qaysi kanalda yo'q UNIKAL ohang:
-- Donishmand bobo + qiziqarli amaki + falsafiy do'st aralashmasi
-- Kulgili, g'ayrioddiy, lekin chuqur ma'noli
-- Texnik emas — bolakaylar va donishmandlar bir xil tushunsin
+Biz "Ai bo'taloq" kanalimiz. Donishmand bobo, hazil-qiyofa amaki va falsafiy do'st bir tanada yashaydi.
+O'qigan kishi: "Voy, bu boshqacha-ku!" desin. Asli — yodda qolaylik.
 
-🎯 SODDA TIL:
-- 5-6 yoshli bolaga aytgandek tushuntiring
-- "AI" → "aqlli yordamchi" / "aqlli mashina"
-- "Transcription" → "eshitib, qog'ozga tushiradi"
-- "Generate" → "yaratadi", "tug'iradi"
-- Bobomiz ham, talaba ham tushunsin
+🎭 OHANG (eng muhimi):
+- Falsafiy, donishmand, biroz hazil — quruq texnik tavsif EMAS
+- Har jumla — kichik hayot bo'lagi yoki kuzatuv kabi
+- Ba'zan ritorik savol: "ko'rdingizmi?", "to'g'rimi?", "ha?", "labbay?"
+- Ba'zan kichik metafora: "bo'sh qog'oz qo'rquvi", "vaqt — daryo", "so'zlar havoga sochiladi"
+- Ba'zan to'g'ridan-to'g'ri haqiqat: "shuncha vaqtni biror narsaga sarflagansiz, ko'rasiz endi..."
+- "Siz" deb murojaat — go'yo eski tanish bilan suhbat
 
-🎯 ILIQLIK + G'AYRIODDIYLIK:
-- "qo'zichog'im / bo'talog'im / qadrligim / yulduzim / do'mboqqinam / himmatligim" — FAQAT 1 ta toolda (3 dan birida), har gal BOSHQACHA so'z
-- Qolgan 2 toolda — mehrli murojaatsiz, lekin baribir o'ziga xos ohang
-- Ba'zan ritorik savol: "to'g'rimi?", "ko'rdingizmi?", "ha?"
-- Ba'zan kichik kuzatuv-haqiqat: "vaqt og'rir narsa..."
-- "siz" deb murojaat
+💝 MEHRLI MUROJAAT (faqat 1 ta toolda, 3 dan birida):
+- "qo'zichog'im" yoki "bo'talog'im" yoki "qadrligim" yoki "yulduzim" yoki "do'mboqqinam" yoki "himmatligim" yoki "jonim"
+- HAR SAFAR boshqa so'z — takrorlanmasin
+- Qolgan 2 toolda mehrli so'zsiz, lekin baribir o'ziga xos ohang saqlansin
 
-🎯 ESDA QOLISH:
-- Har gap shunday yozilsinki, odamlar uni do'stiga aytib bersa qiziqarli bo'lsin
-- Quruq texnik tavsif emas — kichik hayot bo'lagidek
+🧒 SODDA TIL, LEKIN CHUQUR MA'NO:
+- 5-6 yoshli bola ham tushunsin, lekin donishmand ham bosh chayqasin
+- Texnik atamalar yo'q: "AI" → "aqlli yordamchi", "model" → "aqlli mashina"
+- Har jumla yozishdan oldin: "Bu jumla ichida kichik bir hikmat bormi?" — sinov
+
+🎯 MISOL (xuddi shu DARAJADA chuqur va g'ayrioddiy bo'lsin):
+
+1-tool (metafora + mehrli murojaat):
+"Yig'ilishdagi so'zlar havoda sochilib ketadi-ku, qo'zichog'im. Bu kompaniya esa har birini ushlab, qog'ozga tushiradi. Endi xotirangiz yengillashadi."
+
+2-tool (kuzatuv + ritorik savol):
+"Bo'sh qog'oz oldida qancha o'tirgansiz? Bu yerda u qo'rquv yo'q. Aytasiz — so'z keladi. Ko'rdingizmi, qanchalar oson."
+
+3-tool (donishmandlik + sodda):
+"Kod yozish endi suhbatga aylangan. O'z tilingizda gapirasiz — kompyuter sizni eshitadi. Bir paytlar kitobxonlik yo'qoladi deyishgan, lekin yozish endi yangicha bo'ladi."
 
 USLUB MISOLLARI (xuddi shunday — bolaga aytgandek):
 
@@ -297,8 +305,8 @@ def format_tools_message(tools_data):
     today = datetime.now().strftime("%d-%b")
     tools = tools_data.get("tools", [])
 
-    message = f"🤖 <b>Ai bo'taloq {today}</b>\n"
-    message += "<i>Bugungi AI yordamchilar</i>\n\n"
+    message = f"🤖 <b>Ai bo'taloq {today}</b>\n\n"
+    message += "<i>Bugungi AI yordamchilar</i>\n\n\n"
 
     for tool in tools:
         emoji = tool.get("emoji", "🔧")
@@ -329,8 +337,8 @@ def format_news_message(news_data):
     if not news:
         return None
 
-    message = f"📰 <b>Ai bo'taloq {today}</b>\n"
-    message += "<i>Bugungi AI yangiliklari</i>\n\n"
+    message = f"📰 <b>Ai bo'taloq {today}</b>\n\n"
+    message += "<i>Bugungi AI yangiliklari</i>\n\n\n"
 
     for item in news:
         headline = html_escape(item.get("headline", ""))
@@ -389,14 +397,69 @@ def send_tools():
     return send_to_telegram(tools_msg)
 
 
+def select_top_news(all_news, top_n=5):
+    """20+ ta yangilikdan eng muhim 5 tasini Gemini orqali tanlaydi"""
+    if len(all_news) <= top_n:
+        return all_news
+
+    news_list = "\n".join([
+        f"{i+1}. [{item['source']}] {item['title']}"
+        for i, item in enumerate(all_news)
+    ])
+
+    prompt = f"""Siz AI yangiliklar muharririsiz. Quyidagi {len(all_news)} ta yangilikdan
+ENG MUHIM, ENG QIZIQARLI VA ENG TA'SIRLI {top_n} tasini tanlang.
+
+{news_list}
+
+TANLOV MEZONLARI:
+1. Katta kompaniyalardan muhim e'lon (OpenAI, Google, Anthropic, Meta, Microsoft, xAI, DeepSeek)
+2. Yangi mahsulot/model chiqishi
+3. Kattalik: pul, raqam, ko'lam (milliardlar, millionlar)
+4. Texnologiyaning hayotga ta'siri
+5. Sodir bo'lgan voqea (kelajakdagi spekulyatsiya emas)
+
+KAMROQ AHAMIYATLI:
+- Mavhum tahlillar
+- "X kompaniya Y haqida o'yladi" turidagi
+- Reklama xarakteridagi
+- Juda mahalliy/torcha yangiliklar
+
+Faqat JSON qaytaring:
+{{
+  "selected": [1, 4, 7, 12, 15]
+}}
+
+Bu raqamlar — yuqoridagi ro'yxatdagi yangiliklarning RAQAMI (1-{len(all_news)})."""
+
+    try:
+        content = gemini_generate(prompt, max_tokens=500)
+        indices = json.loads(content).get("selected", [])
+        selected = []
+        for idx in indices[:top_n]:
+            i = idx - 1
+            if 0 <= i < len(all_news):
+                selected.append(all_news[i])
+        if selected:
+            return selected
+    except Exception as e:
+        print(f"⚠️  Tanlov xato ({e}), eng yangilarini olamiz")
+
+    return all_news[:top_n]
+
+
 def send_news():
     """AI Yangiliklar xabarini yuboradi (ertalab)"""
     print("\n📰 RSS manbalardan AI yangiliklari olinmoqda...")
-    real_news = fetch_real_ai_news(max_items=5, hours_back=72)
-    print(f"✅ {len(real_news)} ta yangilik topildi")
+    all_news = fetch_real_ai_news(max_items=20, hours_back=48)
+    print(f"✅ {len(all_news)} ta yangilik topildi")
+
+    print(f"\n🎯 Eng muhim 5 tasi tanlanmoqda...")
+    top_news = select_top_news(all_news, top_n=5)
+    print(f"✅ Top {len(top_news)} ta tanlandi")
 
     print("\n🌐 Sarlavhalar tarjima qilinmoqda...")
-    news_data = translate_news_to_uzbek(real_news)
+    news_data = translate_news_to_uzbek(top_news)
     news_msg = format_news_message(news_data)
 
     if not news_msg:
