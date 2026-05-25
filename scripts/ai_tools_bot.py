@@ -238,10 +238,10 @@ def html_escape(text):
 
 def format_tools_message(tools_data):
     """AI Tools uchun xabar (HTML format)"""
-    today = datetime.now().strftime("%d.%m.%Y")
+    today = datetime.now().strftime("%d-%b")
     tools = tools_data.get("tools", [])
 
-    message = f"🤖 AI TOOLS — {today}\n\n"
+    message = f"🤖 <b>Ai bo'taloq {today}</b>\n\n"
 
     for tool in tools:
         emoji = tool.get("emoji", "🔧")
@@ -266,13 +266,13 @@ def format_tools_message(tools_data):
 
 def format_news_message(news_data):
     """AI Yangiliklar uchun alohida xabar (HTML format)"""
-    today = datetime.now().strftime("%d.%m.%Y")
+    today = datetime.now().strftime("%d-%b")
     news = news_data.get("news", [])
 
     if not news:
         return None
 
-    message = f"📰 AI DAYJEST — {today}\n\n"
+    message = f"📰 <b>Ai bo'taloq {today}</b>\n\n"
     for item in news:
         headline = html_escape(item.get("headline", ""))
         n_url = item.get("url", "")
