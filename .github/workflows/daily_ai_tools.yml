@@ -35,13 +35,13 @@ jobs:
 
       - name: 📦 Kutubxonalarni o'rnatish
         run: |
-          pip install anthropic requests
+          pip install -r requirements.txt
 
       - name: 🤖 AI Tools botni ishlatish
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TEST_MODE: ${{ github.event.inputs.test_mode || 'false' }}
         run: |
           cd scripts

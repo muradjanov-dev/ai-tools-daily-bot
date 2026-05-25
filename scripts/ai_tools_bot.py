@@ -7,15 +7,50 @@ import os
 import json
 import random
 import requests
-from datetime import datetime
-from anthropic import Anthropic
+import feedparser
+from datetime import datetime, timedelta, timezone
+from time import mktime
+import google.generativeai as genai
+
+# Ishonchli AI yangiliklar RSS manbalari
+RSS_FEEDS = [
+    ("OpenAI", "https://openai.com/blog/rss.xml"),
+    ("Google DeepMind", "https://deepmind.google/blog/rss.xml"),
+    ("Google Research", "https://research.google/blog/rss/"),
+    ("Hugging Face", "https://huggingface.co/blog/feed.xml"),
+    ("The Verge AI", "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml"),
+    ("TechCrunch AI", "https://techcrunch.com/category/artificial-intelligence/feed/"),
+    ("VentureBeat AI", "https://venturebeat.com/category/ai/feed/"),
+    ("MIT Tech Review AI", "https://www.technologyreview.com/topic/artificial-intelligence/feed"),
+    ("Ars Technica AI", "https://arstechnica.com/ai/feed/"),
+    ("Wired AI", "https://www.wired.com/feed/tag/ai/latest/rss"),
+]
 
 # Config
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 TELEGRAM_CHANNEL_ID = os.environ["TELEGRAM_CHANNEL_ID"]
-ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
+GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 
-client = Anthropic()
+genai.configure(api_key=GEMINI_API_KEY)
+# Gemini 2.5 Flash - bepul tier, tez va arzon
+model = genai.GenerativeModel("gemini-2.5-flash")
+
+
+def gemini_generate(prompt: str, max_tokens: int = 2000) -> str:
+    """Gemini orqali matn yaratadi va JSON ni tozalaydi"""
+    response = model.generate_content(
+        prompt,
+        generation_config=genai.types.GenerationConfig(
+            max_output_tokens=max_tokens,
+            temperature=0.7,
+        )
+    )
+    content = response.text.strip()
+    if "```json" in content:
+        content = content.split("```json")[1].split("```")[0].strip()
+    elif "```" in content:
+        content = content.split("```")[1].split("```")[0].strip()
+    return content
 
 def search_ai_tools():
     """Claude orqali bugungi eng yaxshi AI toollarni topadi"""
@@ -67,73 +102,106 @@ MUHIM TALABLAR:
 
 Faqat JSON qaytaring, boshqa matn yo'q."""
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2000,
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    content = response.content[0].text.strip()
-
-    # JSON ni tozalash
-    if "```json" in content:
-        content = content.split("```json")[1].split("```")[0].strip()
-    elif "```" in content:
-        content = content.split("```")[1].split("```")[0].strip()
-
+    content = gemini_generate(prompt, max_tokens=2000)
     return json.loads(content)
 
-def search_ai_news():
-    """Bugungi top 5 AI yangiliklarini topadi"""
-    today = datetime.now().strftime("%Y-%m-%d")
 
-    prompt = f"""Siz professional AI yangiliklar muharririsiz. Bugun {today}.
+def fetch_real_ai_news(max_items=5, hours_back=72):
+    """Haqiqiy RSS manbalardan AI yangiliklarini oladi"""
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours_back)
+    all_items = []
 
-Bugungi yoki shu haftadagi eng so'nggi va eng MUHIM 5 ta AI yangiligini toping.
+    for source_name, feed_url in RSS_FEEDS:
+        try:
+            feed = feedparser.parse(feed_url, request_headers={
+                "User-Agent": "Mozilla/5.0 (compatible; AIToolsBot/1.0)"
+            })
+            for entry in feed.entries[:5]:
+                pub_date = None
+                if hasattr(entry, "published_parsed") and entry.published_parsed:
+                    pub_date = datetime.fromtimestamp(mktime(entry.published_parsed), tz=timezone.utc)
+                elif hasattr(entry, "updated_parsed") and entry.updated_parsed:
+                    pub_date = datetime.fromtimestamp(mktime(entry.updated_parsed), tz=timezone.utc)
 
-Format - JSON:
+                if pub_date and pub_date < cutoff:
+                    continue
+
+                title = entry.get("title", "").strip()
+                url = entry.get("link", "").strip()
+
+                if not title or not url:
+                    continue
+
+                all_items.append({
+                    "title": title,
+                    "url": url,
+                    "source": source_name,
+                    "date": pub_date or datetime.now(timezone.utc)
+                })
+            print(f"  ✓ {source_name}: {len(feed.entries)} ta entry")
+        except Exception as e:
+            print(f"  ✗ {source_name}: {e}")
+
+    # Sort by date, newest first
+    all_items.sort(key=lambda x: x["date"], reverse=True)
+
+    # Dedupe by title prefix (avoid same news from multiple sources)
+    seen_titles = set()
+    unique = []
+    for item in all_items:
+        key = item["title"][:50].lower()
+        if key in seen_titles:
+            continue
+        seen_titles.add(key)
+        unique.append(item)
+
+    return unique[:max_items]
+
+
+def translate_news_to_uzbek(news_items):
+    """Inglizcha sarlavhalarni o'zbek tiliga tarjima qiladi"""
+    if not news_items:
+        return {"news": []}
+
+    titles_text = "\n".join([
+        f"{i+1}. {item['title']}" for i, item in enumerate(news_items)
+    ])
+
+    prompt = f"""Quyidagi haqiqiy AI yangiliklar sarlavhalarini O'ZBEK tiliga tarjima qiling.
+
+{titles_text}
+
+QOIDALAR:
+📰 Tabiiy, rasmiy o'zbek tilida tarjima qiling
+📰 Faqat tarjima qiling — MA'NOSINI O'ZGARTIRMANG, qo'shimcha narsa qo'shmang
+📰 Kompaniya, mahsulot va odam nomlarini (OpenAI, ChatGPT, Sam Altman) o'zgartirmang
+📰 Tarjima 8-15 so'zdan iborat bo'lsin
+📰 Clickbait emas — rasmiy, jurnalistik ohang
+📰 Texnik atamalarni tushunarli qiling, lekin aniqlikni saqlang
+
+Format - faqat JSON:
 {{
-  "news": [
-    {{
-      "headline": "Informativ, rasmiy uslubdagi sarlavha o'zbek tilida",
-      "url": "https://..."
-    }}
+  "translations": [
+    "1-tarjima",
+    "2-tarjima",
+    ...
   ]
 }}
 
-USLUB MISOLLARI (xuddi shunday bo'lsin):
-✓ "Google istalgan kontentni boshqa formatga o'tkazuvchi yangi AI modelini ko'rsatdi"
-✓ "Microsoft hisoboti: Ba'zida AI xizmatlaridan foydalanish xodimlardan ham qimmat"
-✓ "Ferrari va IBM muxlislar uchun maxsus AI yordamchini ishga tushirdi"
-✓ "Elon Musk xAI loyihasi uchun tabiat resurslariga e'tibor qaratmoqda"
-✓ "Anthropic Claude'ning yangi versiyasini taqdim etdi"
-✓ "OpenAI 5 milliard dollarlik yangi raund yopdi"
+Faqat JSON qaytaring, hech narsa qo'shmang."""
 
-QOIDALAR:
-📰 Sarlavha 8-15 so'zdan iborat bo'lsin (to'liq jumla)
-📰 RASMIY, INFORMATIV uslub — clickbait emas, JURNALISTIK ohang
-📰 Aniq fakt: kim, nima qildi (kompaniya nomi + harakat + ob'ekt)
-📰 O'zbek tilida tabiiy, grammatik to'g'ri bo'lsin
-📰 Real manbalardan URL'lar (TechCrunch, The Verge, Reuters, OpenAI, Anthropic blog)
-📰 Oxirgi 2-3 kundagi haqiqiy yangiliklar
-📰 Turli kompaniyalar (OpenAI, Anthropic, Google, Meta, Microsoft, xAI, DeepSeek va h.k.)
-📰 Emoji KERAK EMAS — sarlavha o'zi gapirsin
+    content = gemini_generate(prompt, max_tokens=1500)
+    translations = json.loads(content).get("translations", [])
 
-Faqat JSON qaytaring."""
+    result = []
+    for item, translation in zip(news_items, translations):
+        result.append({
+            "headline": translation,
+            "url": item["url"],
+            "source": item["source"]
+        })
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=1500,
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    content = response.content[0].text.strip()
-    if "```json" in content:
-        content = content.split("```json")[1].split("```")[0].strip()
-    elif "```" in content:
-        content = content.split("```")[1].split("```")[0].strip()
-
-    return json.loads(content)
+    return {"news": result}
 
 
 def translate_to_uzbek(tools_data):
@@ -153,19 +221,7 @@ Qoidalar:
 
 Faqat JSON formatida qaytaring."""
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2000,
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    content = response.content[0].text.strip()
-
-    if "```json" in content:
-        content = content.split("```json")[1].split("```")[0].strip()
-    elif "```" in content:
-        content = content.split("```")[1].split("```")[0].strip()
-
+    content = gemini_generate(prompt, max_tokens=2000)
     return json.loads(content)
 
 def format_telegram_message(tools_data, news_data):
@@ -199,7 +255,11 @@ def format_telegram_message(tools_data, news_data):
         for item in news:
             headline = item.get("headline", "")
             n_url = item.get("url", "")
-            message += f"● [{headline}]({n_url})\n\n"
+            source = item.get("source", "")
+            message += f"● [{headline}]({n_url})\n"
+            if source:
+                message += f"   _Manba: {source}_\n"
+            message += "\n"
 
     message += "#AITools #AINews #Uzbek"
     return message
@@ -254,13 +314,16 @@ def main():
         tools_uz = translate_to_uzbek(tools_data)
         print("✅ Tarjima tugadi")
 
-        # 3. AI yangiliklarni topish
-        print("\n📰 AI yangiliklari qidirilmoqda...")
+        # 3. Haqiqiy RSS dan AI yangiliklarni olish
+        print("\n📰 RSS manbalardan AI yangiliklari olinmoqda...")
         try:
-            news_data = search_ai_news()
-            print(f"✅ {len(news_data.get('news', []))} ta yangilik topildi")
+            real_news = fetch_real_ai_news(max_items=5, hours_back=72)
+            print(f"✅ {len(real_news)} ta haqiqiy yangilik topildi")
+            print("\n🌐 Sarlavhalar o'zbek tiliga tarjima qilinmoqda...")
+            news_data = translate_news_to_uzbek(real_news)
+            print(f"✅ {len(news_data.get('news', []))} ta yangilik tarjima qilindi")
         except Exception as e:
-            print(f"⚠️  Yangiliklar topilmadi: {e}")
+            print(f"⚠️  Yangiliklar olinmadi: {e}")
             news_data = {"news": []}
 
         # 4. Xabarni formatlash
