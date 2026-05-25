@@ -260,6 +260,7 @@ def format_tools_message(tools_data):
             message += f"   _{main_feature}_\n"
         message += "\n"
 
+    message += "[@ai\\_botaloq](https://t.me/ai_botaloq) — ai botaloq bilan sun'iy intellekt\n\n"
     message += "#AITools #Uzbek"
     return message
 
@@ -278,6 +279,7 @@ def format_news_message(news_data):
         n_url = item.get("url", "")
         message += f"● [{headline}]({n_url})\n\n"
 
+    message += "[@ai\\_botaloq](https://t.me/ai_botaloq) — ai botaloq bilan sun'iy intellekt\n\n"
     message += "#AINews #Uzbek"
     return message
 
@@ -289,7 +291,7 @@ def send_to_telegram(message):
         "chat_id": TELEGRAM_CHANNEL_ID,
         "text": message,
         "parse_mode": "Markdown",
-        "disable_web_page_preview": False
+        "disable_web_page_preview": True
     }
 
     response = requests.post(url, json=payload, timeout=30)
