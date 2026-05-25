@@ -4,12 +4,14 @@ AI Tools Daily Bot - Har kuni yangi AI toollarni Telegram kanalga yuboradi
 """
 
 import os
+import re
 import json
 import random
 import requests
 import feedparser
 from datetime import datetime, timedelta, timezone
 from time import mktime
+from urllib.parse import urlparse
 import google.generativeai as genai
 
 # Ishonchli AI yangiliklar RSS manbalari
@@ -64,8 +66,8 @@ def gemini_generate(prompt: str, max_tokens: int = 4000, json_mode: bool = True)
 
     return content
 
-def search_ai_tools():
-    """Claude orqali bugungi eng yaxshi AI toollarni topadi"""
+def search_ai_tools(count=3):
+    """Gemini orqali bugungi eng yaxshi AI toollarni topadi (default 3 ta)"""
     today = datetime.now().strftime("%Y-%m-%d")
 
     # Har kuni boshqa kategoriyalarga fokus qilish uchun
@@ -85,7 +87,7 @@ def search_ai_tools():
 
     prompt = f"""Siz iliq, donishmand mentor uslubida yozadigan AI maslahatchisiz. Bugun {today}.
 
-Bugungi kunda eng yangi va foydali 3 ta AI tool haqida ma'lumot bering.
+Bugungi kunda eng yangi va foydali {count} ta AI tool haqida ma'lumot bering.
 Fokus: {category} sohasidagi toollar.
 
 ⚠️ DIQQAT — BU BIZNING BENZARSIZ BRENDIMIZ:
@@ -358,14 +360,17 @@ def html_escape(text):
 
 
 def format_tools_message(tools_data):
-    """AI Tools uchun xabar (HTML format) — kechqurun"""
+    """AI Tools uchun xabar (HTML format)"""
     today = datetime.now().strftime("%d-%b")
     tools = tools_data.get("tools", [])
+    single = len(tools) == 1
 
-    message = f"🤖 <b>Ai bo'taloq {today}</b>\n\n"
-    message += "<i>Bugungi AI yordamchilar</i>\n\n\n"
+    if single:
+        message = f"🤖 <b>Ai bo'taloq {today}</b>\n\n<i>Bugungi AI yordamchi</i>\n\n"
+    else:
+        message = f"🤖 <b>Ai bo'taloq {today}</b>\n\n<i>Bugungi AI yordamchilar</i>\n\n\n"
 
-    for tool in tools:
+    for i, tool in enumerate(tools):
         emoji = tool.get("emoji", "🔧")
         name = html_escape(tool.get("name", ""))
         url = tool.get("url", "")
@@ -380,9 +385,10 @@ def format_tools_message(tools_data):
             message += f"👥 <b>Kimlar uchun?</b> {who}\n\n"
         if tip:
             message += f"💡 <b>Tavsiya:</b> {tip}\n"
-        message += "\n— — — — — — — — —\n\n"
+        if not single and i < len(tools) - 1:
+            message += "\n— — — — — — — — —\n\n"
 
-    message += '<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - sodda tilda sun\'iy intellekt'
+    message += '\n<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - sodda tilda sun\'iy intellekt'
     return message
 
 
@@ -405,8 +411,44 @@ def format_news_message(news_data):
     message += '\n<a href="https://t.me/ai_botaloq">@ai_botaloq</a> - sodda tilda sun\'iy intellekt'
     return message
 
+def fetch_og_image(url):
+    """Tool URL dan og:image olishga harakat qiladi, fallback — Clearbit logo"""
+    try:
+        r = requests.get(url, timeout=8, headers={
+            "User-Agent": "Mozilla/5.0 (compatible; AIToolsBot/1.0; +https://t.me/ai_botaloq)"
+        }, allow_redirects=True)
+        html = r.text
+
+        patterns = [
+            r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
+            r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+            r'<meta[^>]+name=["\']twitter:image["\'][^>]+content=["\']([^"\']+)["\']',
+        ]
+        for pat in patterns:
+            m = re.search(pat, html, re.IGNORECASE)
+            if m:
+                img = m.group(1).strip()
+                if img.startswith("//"):
+                    img = "https:" + img
+                elif img.startswith("/"):
+                    parsed = urlparse(url)
+                    img = f"{parsed.scheme}://{parsed.netloc}{img}"
+                return img
+    except Exception as e:
+        print(f"  ⚠️  og:image olib bo'lmadi: {e}")
+
+    # Fallback — Clearbit logo
+    try:
+        domain = urlparse(url).netloc
+        if domain.startswith("www."):
+            domain = domain[4:]
+        return f"https://logo.clearbit.com/{domain}?size=512"
+    except Exception:
+        return None
+
+
 def send_to_telegram(message):
-    """Telegramga xabar yuboradi"""
+    """Telegramga matn xabarini yuboradi"""
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
 
     payload = {
@@ -427,6 +469,35 @@ def send_to_telegram(message):
         print(f"❌ Xato: {result}")
         return False
 
+def send_to_telegram_photo(message, image_url):
+    """Telegramga rasm + caption yuboradi (caption max 1024 belgi)"""
+    if not image_url:
+        return send_to_telegram(message)
+
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto"
+    caption = message if len(message) <= 1024 else message[:1020] + "..."
+
+    payload = {
+        "chat_id": TELEGRAM_CHANNEL_ID,
+        "photo": image_url,
+        "caption": caption,
+        "parse_mode": "HTML",
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=30)
+        result = response.json()
+        if result.get("ok"):
+            print(f"✅ Photo xabar yuborildi! ID: {result['result']['message_id']}")
+            return True
+        else:
+            print(f"⚠️  Photo yuborilmadi ({result.get('description')}) — matn ko'rinishida yuboramiz")
+            return send_to_telegram(message)
+    except Exception as e:
+        print(f"⚠️  Photo xato: {e} — matn ko'rinishida yuboramiz")
+        return send_to_telegram(message)
+
+
 def send_error_notification(error_msg):
     """Xato bo'lganda xabar yuboradi"""
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -440,18 +511,27 @@ def send_error_notification(error_msg):
     except:
         pass
 
-def send_tools():
-    """AI Tools xabarini yuboradi (kechqurun)"""
-    print("\n🔍 AI toollar qidirilmoqda...")
-    tools_data = search_ai_tools()
-    print(f"✅ {len(tools_data.get('tools', []))} ta tool topildi")
+def send_tools(count=1):
+    """AI Tools xabarini yuboradi — 1 ta tool + rasm"""
+    print(f"\n🔍 {count} ta AI tool qidirilmoqda...")
+    tools_data = search_ai_tools(count=count)
+    tools = tools_data.get("tools", [])
+    print(f"✅ {len(tools)} ta tool topildi")
 
-    tools_uz = translate_to_uzbek(tools_data)
-    tools_msg = format_tools_message(tools_uz)
+    if not tools:
+        return False
+
+    # Faqat birinchi tool ni olamiz
+    tool = tools[0]
+    print(f"\n🖼️  '{tool.get('name')}' uchun rasm olinmoqda...")
+    image_url = fetch_og_image(tool.get("url", ""))
+    print(f"✅ Rasm: {image_url[:80] if image_url else 'topilmadi'}")
+
+    tools_msg = format_tools_message({"tools": [tool]})
     print(f"✅ Tools xabar tayyor: {len(tools_msg)} belgi")
 
-    print("\n📤 AI Tools xabari yuborilmoqda...")
-    return send_to_telegram(tools_msg)
+    print("\n📤 AI Tool xabari yuborilmoqda...")
+    return send_to_telegram_photo(tools_msg, image_url)
 
 
 def select_top_news(all_news, top_n=5):

@@ -4,7 +4,9 @@ on:
   schedule:
     # Ertalab 09:00 Toshkent (UTC+5 = 04:00 UTC) — AI YANGILIKLAR
     - cron: '0 4 * * *'
-    # Kechqurun 19:00 Toshkent (UTC+5 = 14:00 UTC) — AI TOOLS
+    # Tushlik 13:00 Toshkent (UTC+5 = 08:00 UTC) — 1-AI TOOL + rasm
+    - cron: '0 8 * * *'
+    # Kechqurun 19:00 Toshkent (UTC+5 = 14:00 UTC) — 2-AI TOOL + rasm
     - cron: '0 14 * * *'
 
   # Qo'lda ishga tushirish uchun
@@ -47,6 +49,8 @@ jobs:
             echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
           elif [ "${{ github.event.schedule }}" = "0 4 * * *" ]; then
             echo "mode=news" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.schedule }}" = "0 8 * * *" ]; then
+            echo "mode=tools" >> $GITHUB_OUTPUT
           elif [ "${{ github.event.schedule }}" = "0 14 * * *" ]; then
             echo "mode=tools" >> $GITHUB_OUTPUT
           else
